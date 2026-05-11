@@ -1,0 +1,448 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{graphicx}
+\usepackage[margin=1in,headheight=14pt]{geometry}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\definecolor{headingblue}{HTML}{1F4E79}
+\definecolor{accentteal}{HTML}{2A7F78}
+\definecolor{softgray}{HTML}{F6F7F9}
+\definecolor{rulegray}{HTML}{D8DEE8}
+\definecolor{textgray}{HTML}{333333}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=headingblue,
+    urlcolor=accentteal,
+    citecolor=headingblue,
+    pdfauthor={Game Theory and Strategy},
+    pdftitle={MATH3911 Notes}
+}
+
+\setstretch{1.14}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.58em}
+\setlength{\abovedisplayskip}{0.65em}
+\setlength{\belowdisplayskip}{0.65em}
+\setlist{itemsep=0.2em,topsep=0.35em,leftmargin=2.2em}
+
+\titleformat{\section}
+    {\Large\bfseries\color{headingblue}}
+    {\thesection}{0.75em}{}
+    [\vspace{0.15em}\titlerule]
+\titleformat{\subsection}
+    {\large\bfseries\color{accentteal}}
+    {\thesubsection}{0.7em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.7em}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.35em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textsc{MATH3911}}
+\rhead{\textsc{Game Theory and Strategy}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\tcbset{
+    colback=softgray,
+    colframe=accentteal,
+    arc=1.5mm,
+    boxrule=0.6pt,
+    left=0.9em,
+    right=0.9em,
+    top=0.55em,
+    bottom=0.55em
+}
+
+\newcommand{\note}[1]{%
+    \begin{tcolorbox}[title=\textbf{Note},fonttitle=\bfseries,coltitle=textgray]
+        #1
+    \end{tcolorbox}
+}
+
+\title{\textbf{\Huge MATH3911}\\[0.35em]\Large Game Theory and Strategy}
+\author{}
+\date{May 6, 2026}
+\begin{document}
+\pagenumbering{gobble}
+\begin{titlepage}
+    \centering
+    \vspace*{0.22\textheight}
+    {\color{headingblue}\rule{0.75\textwidth}{0.8pt}\par}
+    \vspace{1.2em}
+    {\Huge\bfseries MATH3911\par}
+    \vspace{0.55em}
+    {\Large Game Theory and Strategy\par}
+    \vspace{1.0em}
+    {\large Lecture Notes\par}
+    \vspace{1.2em}
+    {\color{headingblue}\rule{0.75\textwidth}{0.8pt}\par}
+    \vfill
+    {\large May 6, 2026\par}
+\end{titlepage}
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Zermelo's Theorem}
+Any two-person game of perfect information in which the players move alternatively and in which chance does not affect the decision making process is called a \textbf{combinatorial game}. \par
+
+\subsection{Weak form}
+Zermelo's Theorem says for any finite combinatorial game which \textbf{cannot end in a draw}, then one of the two players must have a winning strategy. \par
+
+\subsection{Strong form}
+\par In any finite combinatorial game, at least one of the player has a \textbf{drawing}
+(non-losing) strategy. \par
+If the game cannot end in a draw, then one of the two players must hav a winning strategy. \par
+
+\subsection{Proof}
+Suppose $P_1$ is the initial position, and assume neither player has a drawing strategy for the whole game. \par
+Claim 1: Any move that player A can make from the initial position $P_1$ cannot lead to a drawing position for A. \par
+Claim 2: There is at least one possible move leading from $P_1$ to a new position $P_2$, which is not a drawing position for player B. \par
+$\Rightarrow$ there is a possible infinite sequence of moves $P_1 \rightarrow P_2 \rightarrow P_3 \dots$, contradicting the finiteness assumption of the game. \par
+
+\textbf{Corollary:} In a finite combinatorial game, if one player X has a drawing strategy, but has no winning strategy, then the other player Y must also have a drawing strategy. \par
+
+\section{Noncooperative Games}
+\subsection{Nash equilibrium}
+A \textbf{Nash equilibrium} or an \textbf{equilibrium point} of $G$ is an $n$-tuple $s$ of strategies such that for any player $i$ and for any strategy $t^i$ of player $i, h^i(s|t^i) \leqslant h^i(s)$. \par
+By definition, at a Nash equilibrium, no player can benefit from adopting a different strategy, given the others' strategies are fixed. 
+
+\subsection{Minimax Theorem}
+Let $G$ be a two-persion zero-sum game. Assume that the $S^1$ and $S^2$ are compact subsets of Euclidean space and the $h^i$ are continuous on $S^1 \times S^2$. Then a necessary and sufficient condition for the existence of an equilibrium point in $G$ is that:
+\[
+\max_{S^1} \min_{S^2} h^1(s^1, s^2) = \min_{S^2} \max_{S^1} h^1(s^1, s^2)
+\]
+\textit{Proof sketch.}
+\begin{enumerate}
+    \item [(1)] first show that we always have:
+        \[
+        \max_{S^1} \min_{S^2} h^1 \leqslant \min_{S^2} \max_{S^1} h^1 
+        \]
+        
+    \item [(2)] there exists a Nash equilibrium $\Rightarrow$ the above two are equal
+    \item [(3)] the above two are equal $\Rightarrow$ there exists a Nash equilibrium
+\end{enumerate}
+
+\note{
+Under any strategy space, if minimax inequality holds $\Rightarrow$ Nash equilibrium exists. \\
+In the two-player zero-sum game, Nash equilibrium may exists in pure strategy space, and must exists in mixed strategy space.}
+
+\subsection{Existence of Nash equilibrium}
+A \textbf{mixed} Nash equilibrium is an n-tuple $p \in \prod_{i \in N} P^i$ of mixed strategies such that for each player $i$ and any mixed strategy $t^i$ of $i$, we have:
+\[
+H^i(p|t^i) \leqslant H^i(p)
+\]
+
+The mixed extension of any game with finitely many strategies has an equilibrium point (Nash, 1951). \par
+\textit{Proof sketch.}
+\begin{enumerate}
+    \item [(1)] show that for each player $i$, and any mixed strategy $t^i$ of $i$, we have:
+        \[
+        H^i(p|t^i) \leqslant H^i(p)
+        \]
+
+        \note{
+        This only proves the existence of maximum payoff, doesn't prove the existence of $p$ where all plyaers achieve maximum payoff.}
+
+    \item [(2)]
+        for each player $i \in N$ and his pure strategy $j \in S^i$, we define the following real funtion
+        \[
+        g_j^i(p) = max\left\{0, H^i(p|e_j^i) - H^i(p)\right\}, \forall p \in P
+        \]
+        $g_j^i$ is continuous on $P$ \par
+        Since each $g_j^i \geqslant 0$, if we can prove that $\sum_{j=1}^{m^i} g_j^i(p) = 0$ for all $i$, then we are done. \par
+    
+    \item [(3)]
+        Define a new function $f = (f_1^1, \dots f_{m^1}^1, \dots, f_1^n, \dots, f_{m^n}^n) : P \rightarrow P$ by:
+        \[
+        f_j^i(p) = \frac{p_j^i + g_j^i(p)}{1 + \sum_{j=1}^{m^i} g_j^i(p)}
+        \]
+        by Brouwer's fixed point theorem, $f$ has a fixed point; i.e. there is some $p$ in $P$ s.t. $f(p) = p$ \par
+        Hence, for this $p$,
+        \[
+        p_j^i = \frac{p_j^i + g_j^i(p)}{1 + \sum_{j=1}^{m^i} g_j^i(p)}
+        \]
+        \[
+        p_j^i \left[\sum_{j=1}^{m^i} g_j^i(p) \right] = g_j^i(p)
+        \]
+
+    \item [(4)]
+        For each $i$ in $N$, there is some $j$ (depends on $i$) for which $p_j^i > 0$ and $g_j^i(p) = 0$
+        This leas to $\sum_{j=1}^{m^i} g_j^i(p) = 0$ for all $i$.
+        Hence $H^o(p|e_j^i) \leqslant H^i(p)$, and for every mixed strategy $t^i \in P^i$,
+        \[
+        H^i(p|t^i) = \sum_{j=1}^{m^i} t_j^i H(p|e_j^i) \leqslant \sum_{j=1}^{m^i} t_j^i H(p) = H^i(p)
+        \]
+        which establishes the theorem.
+    
+\end{enumerate}
+
+\section{Cournot's model of oligopoly}
+\subsection{Two firms}
+Market price $P$:
+\[
+P = P(Q) = 
+\begin{cases}
+    a - Q & \text{if } Q \leqslant a \\
+    0     & \text{if } Q > a 
+    \end{cases}
+\]
+Cost of firm $i$, $C_i$:
+\[
+C_i = C_i(q_i) = cq_i 
+\]
+where $q_i$ is the quantity of good that firm $i$ chooses to produce. \par
+
+Profit of firm $i$, $\pi_i$:
+\[
+\pi_i(q_1, q_2) = q_i P(q_1 + q_2) - C_i(q_i) =
+\begin{cases}
+    q_i (a - c - q_1 - q_2) & \text{if } q_1 + q_2 \leqslant a \\
+    -cq_i                   & \text{if } q_1 + q_2 > a
+\end{cases}
+\]
+where $a$ represents the \textbf{highest} price consumers are willing to pay. \par
+
+The \textbf{best response functions} $b_i(q_j)$ for firm $i$ is:
+\[
+b_1(q_2) =
+\begin{cases}
+    \frac{1}{2}(a - c - q_2) & \text{if } q_2 \leqslant a - c \\
+    0                        & \text{if } q_2 > a - c
+\end{cases}
+\]
+\[
+b_2(q_1) =
+\begin{cases}
+    \frac{1}{2}(a - c - q_1) & \text{if } q_1 \leqslant a - c \\
+    0                        & \text{if } q_1 > a - c
+\end{cases}
+\]
+
+Therefore, solving the system of equations:
+\[
+\begin{cases}
+    q_1 = b_1(q_2) \\
+    q_2 = b_2(q_1)
+\end{cases}
+\]
+we conclude that $q_1 = q_2 = \frac{1}{3}(a - c)$
+
+\subsection{\texorpdfstring{$n$ firms}{n firms}}
+Similar to above, the only Nash equilibrium is $q_1 = \dots = q_n = \frac{1}{n+1} (a - c)$ \\
+At the equilibrium, the price is given by:
+\[
+P(\frac{n}{n+1} (a - c)) = a - \frac{n}{n+1} (a - c)
+\]
+
+\section{Application to Evolutionary Biology}
+Consider a \textbf{population} of decision makers, which may \textbf{evolve} over time. \par
+The payoff of adopting a strategy $\sigma$ is defined as the \textbf{fitness}, which is the expected number of offspring for the player using $\sigma$. \par
+
+\subsection{Population Profile}
+A \textbf{population profile} is a vector $x = (x(s_1), \dots x(s_n))$ that gives a probability which each strategy $s \in S$ is played in the population. \par
+We have $x(s) = \sum_{\sigma} q_{\sigma} p_{\sigma} (s)$, where $q_{\sigma}$ is the \textbf{proportion} of population using the mixed strategy $\sigma$, $p_{\sigma} (s)$ is the probability of using $s$ in the mixed strategy $\sigma$. \par
+The payoff of a pure strategy is $\pi(s, x)$, then the payoff of a mixed strategy $\sigma$ is defined as:
+\[
+\pi(\sigma, x) = \sum_{s \in S} p_{\sigma}(s) \pi(s, x)
+\] 
+
+\subsection{Evolutionary Stable Strategies}
+One type of the end-point of evolution is called an \textbf{evolutionary stable strategy} (ESS). \par
+
+Consider a population where all individuals adopt strategy $\sigma^*$. Now suppose a mutation occurs and a small proportion $\epsilon$ of individuals use some other strategy $\sigma$. Then the new population is called \textbf{post-entry population} and is denoted by $x_{\epsilon, \sigma}$.
+\[
+x_{\epsilon, \sigma} = (1 - \epsilon) \sigma^* + \epsilon \sigma
+\]
+
+Then, a mixed strategy $\sigma^*$ is an ESS if there exists a $\delta$ such that for every $0 < \epsilon < \delta$ and every $\delta \neq \delta^*$,
+\[
+\pi(\sigma^*, x_\epsilon) > \pi(\sigma, x_\epsilon)
+\]
+
+\subsection{Game Against the Field}
+A population game where there is no specific ``opponent'' for a given individual. The payoff only depends on the population profile.
+
+\subsection{Pair-wise Contest Game}
+A population game wherw a given individual players against an opponent that has been randomly selected from the population. The payoff depedns on that both individuals do. \par
+In the pair-wise contest game, the payoff to an individual using $\sigma$ in a population with profile $x$ is:
+\[
+\pi(\sigma, x) = \sum_{s \in S} \sum_{s' \in S} p(s) x(s') \pi(s, s') 
+\]
+
+If a pair-wise contest game has payoffs given by above, then the associated two-player game is the game with payoff $\pi_1(s, s') = \pi(s, s') = \pi_2(s', s)$.
+
+Let $\sigma^*$ be a strategy in pair-wise contest population game. Then $\sigma^*$ is an ESS if and only if $\forall \sigma \neq \sigma^*$, either
+\[
+\begin{cases}
+    \pi(\sigma^*, \sigma^*) > \pi(\sigma, \sigma^*) \text{ or} \\
+    \pi(\sigma^*, \sigma^*) = \pi(\sigma, \sigma^*) \text{ and } \pi(\sigma^*, \sigma) > \pi(\sigma, \sigma)
+\end{cases}
+\]
+
+\section{Cooperative Games}
+\subsection{Definition}
+\textbf{Cooperative games} are games in which players enter into \textbf{mutually binding agreements}. \par
+
+A game in \textbf{coalitional form} consists of
+\begin{enumerate}
+    \item [1. ] a set $N$ (the players)
+    \item [2. ] a function $v : 2^N \rightarrow \mathbb{R}$, such that $v(\emptyset) = 0$ ($2^N = \left\{S : S \subset N\right\}$)
+\end{enumerate}
+
+A subset $S$ of $N$ is called a \textbf{coalition}. The funciton $v$ is called the \textbf{coalition function}, and $v(S)$ is the \textbf{value} of coalition $S$. \par
+
+Let $N$ be the set of players. An $n$-\textbf{person weighted majority game} with weights $\left\{w^i \geqslant 0\right\}_{i \in N}$ and quota $q$ (written $[q;w_1, \dots, w_n]$) is a cooperative game $(N;v)$ defined by
+\[
+v(S) = 
+\begin{cases}
+    1 \text{\quad if } \sum_{i \in S} w^i \geqslant q \\
+    0 \text{\quad if } \sum_{i \in S} w^i < q
+\end{cases}
+\]
+
+\subsection{Shapley Value}
+The coalition function $v$ is \textbf{monotonic} if $S \subset T$ implies $v(S) \leqslant v(T)$ for all $S, T \subset N$. \par
+
+The coalition function $v$ is \textbf{superadditive} if $v(S \cap T) = \emptyset$ implies $v(S \cup T) \geqslant v(S) + v(T)$ for all disjoint $S, T \subset N$. \par
+
+A game is 0-\textbf{normalized} if $v(i) = 0$ for all $i \in N$; it is 0-1 \textbf{normalized} if it is 0-normalized and $v(N)$ = 1. \par
+
+Elements $i$ and $j$ of $N$ are \textbf{symmetric players} in the game $(N;v)$ if for all $S$ containing neither $i$ nor $j$, 
+\[
+v(S \cup \{i\}) = v(S \cup \{j\})
+\]
+In particular, if $S = \emptyset$, we have $v(\{i\}) = v(\{j\})$. \par
+
+An element $i$ of $N$ is a \textbf{null player} if $v(S \cup \{i\}) = v(S)$ for all $S$ not containing $i$. \par
+$R^{|N|}$ is the Euclidean space whose dimension is the cardinality of $N$, and whose coordinates are indexed by the memebers of $N$ themselves. \par
+The game $(N;v)$ is called the \textbf{sum} of two games $(N; u)$ and $(N; w)$ if $v(S) = u(S) + w(S)$ for all $S \subset N$. \par
+
+A \textbf{shapley value} on $N$ is a function $\phi = (\phi_1, \dots, \phi_n): G^N \rightarrow R^{|N|} (= R^n)$ satisfying the following axioms:
+\begin{enumerate}
+    \item [1. ] Symmetry condition: if $i$ and $j$ are substitues in $v$, then
+        \[
+        \phi_i(v) = \phi_j(v)
+        \]
+    \item [2. ] Null player condition: if $i$ is a null player, then $\phi_i(v) = 0$
+    \item [3. ] Efficiency condition: $\sum_{i \in N} \phi_i(v) = v(N)$
+    \item [4. ] Additivity condition: $\phi_i(v + w) = \phi_i(v) + \phi_i(w), \forall i \in N$
+\end{enumerate}
+
+A \textbf{carrier game} $(N; v)$ is a game in which there is a coalition $T$, called the \textbf{carrier} of the game, such that
+\[
+\begin{cases}
+    v(S) = v(T), \text{  whenever } T \subset S \\
+    v(S) = 0, \text{  otherwise.}
+\end{cases}
+\]
+\note{Splitting a game into carrier games can simplify the analysis of Shapley values.}
+
+There exists a unique value on $G^N$ for every $N$ (Shapley, 1953). \par
+The \textbf{Shapley value} $\phi$ on $N$ is given by
+\[
+\phi_i(v) = \frac{1}{|N|!} \sum_{\text{all permutations } \sigma} \left[v(N_{\sigma}^i \cup \{i\}) - v(N_{\sigma}^i)\right]
+\]
+where $N_{\sigma}^i$ represents the set of players preceding $i$ in $N$ corresponding to the permutation $\sigma$ (Shapley, 1953). \par
+
+
+\textbf{Example:} The shapley value as a player's index of power in weithged majority games. \par
+
+Note that any weighted majority game $[q; w_1, \dots, w_n]$ is a \textbf{simple} game, i.e., $v(S) = 0$ when $S$ is a losing coalition, and $v(S) = 1$ when $S$ is a winning coalition. \par
+$v(S \cup \{i\}) - v(S) = 1$ only if $i$ is the \textbf{key player (pivotal player)}. \par
+For any permutation $\sigma$ on $\{1, \dots, n\}$, there exists unique player $i$ such that $i$ is the key player in the coalition $N_{\sigma}^i$, and we denote the pivotal player $i$ by $p_{\sigma}$. \par
+Thus, the \textbf{Shapley-Shubik Index (SSI)} of player $i$ is simply defined as
+\[
+SSI(i) = \frac{1}{n!} \left|\{\sigma: p_{\sigma}^i = 1\}\right|
+\]
+
+\section{Cooperative Games: The Core}
+We shall consider the problem how the payoffs can be split between the players in the game from the pooint of view of \textbf{stability} of the coalitions. \par
+
+A \textbf{payoff vector} is a member of $R^{|N|}$ (the Euclidean $|N|$-dimensional space whose coordinates are indexed by teh members of the game $(N; v)$). \par
+
+A payoff vector $x = (x^1, \dots, x^n)$ is called \textbf{individually rational} if for all players $i \in N$,
+\[
+x^i \geqslant v(i)
+\]
+A payoff vector is called \textbf{group rational} (or \textbf{efficient}) if
+\[
+\sum_{i \in N} x^i = v(N)
+\]
+
+An \textbf{inputation} is a payoff vector that is individually and group rational.
+
+The \textbf{core} of the game $(N; v)$ is the set of all imputations such that for \textbf{all} $S \subset N$,
+\[
+\sum_{i \in S} x^i \geqslant v(S)
+\]
+
+Let $S \subset N$. The \textbf{characteristic vector of} $S$ is the element $\chi_S$ of $R^{|N|}$ defined by
+\[
+x^i_S = 
+\begin{cases}
+    1 \quad \text{if } i \in S \\
+    0 \quad \text{if otherwise} \\
+\end{cases}
+\]
+
+A family $\mathcal{S}$ of coalitions is called \textbf{balanced} if there exists a sequence of non-negative numbers $\{\delta_S\}_{S \in \mathcal{S}}$ such that
+\[
+\sum_{S \in \mathcal{S}} \delta_S \chi_S = \chi_N
+\]
+$\{\delta_S\}_{S \in \mathcal{S}}$ are called \textbf{balancing weights} for $\mathcal{S}$. \par
+\note{$\sum_{i \in S, S \in \mathcal{S}} \delta_S = 1$ for all $i$.}
+
+A necessary and sufficient condition for the core of $(N; v)$ to be non-empty is that for \textbf{all} balanced families $\mathcal{S}$ and corresponding balancing weights $\{\delta_S\}_{S \in \mathcal{S}}$, we have 
+\[
+\sum_{S \in \mathcal{S}} \delta_S v(S) \geqslant v(N)
+\]
+
+\section{Market Games}
+In a market game, there is one consumption good, $l$ production goods, and $n$ players. Each player $i$ has a production function, $u^i(x_1, x_2, \dots, x_l)$, defined for all $x_j \geqslant 0$ and with values in $R$.  \par
+
+The quantity $u^i(x_1, x_2, \dots, x_l)$ represents the amount of the single consumption good that $i$ can produce from the inputs $x_1, x_2, \dots, x_l$.
+
+Each player $i$ also has an \textbf{endowment $a^i$} $ = (a_1^i, a_2^i, \dots, a_l^i)$ of production goods.
+
+A function $u$ is called \textbf{concave} if its domain is convex and for $x$ and $y$ in the domain of $u$ and all $\alpha$ in $[0, 1]$,
+\[
+u(\alpha x + (1 - \alpha) y) \geqslant \alpha u(x) + (1 - \alpha) u(y)
+\]
+
+Assume that the $u^i$'s are concave and continuous. Then the game $(N; v)$ defined by (1) is called a \textbf{market game}. \par
+
+Every market game has a non-empty core (Shapley and Shubik, 1969). \par
+
+Let $(N;v)$ be a game, and $T \subset N$. The subgame $(T; v_T)$ defined by $T$ is the game whose player set is $T$ and whose worth function is defined by $v_T(S) = v(S)$ for all $S \subset T$. \par
+
+\section{The Von Neumann-Morgenstern Solution}
+Let $x$ and $y$ be payoff vectors, and let $S$ be a coalition. We say $x$ dominates $y$ via $S$ (written $x \succ_S y$) if
+\[
+x^i > y^i \quad \forall i \in S \text{ and } x(S) \leqslant v(S)
+\]
+
+An inputation $y$ is in the core if and only if it is not dominated by any payoff vector (not necessarily an inputation). \par
+
+Assume that $v$ is superadditive (i.e., $S \cap T = \emptyset$ implies $v(S \cup T) \geqslant v(S) + v(T)$). Then an imputation $y$ is in the core if and only if it is not dominated by any imputation. \par
+
+A set $K$ of imputations is called a \textbf{von Neumann-Morgenstern (N-M) solution} of $(N; v)$ if $K$ is the set of all imputations not dominated by any member of $K$. \par
+
+$K$ is an N-M solution of $v$ if and only if for all imputations $x$ and $y$, \par
+\quad If $x, y \in K$, then $x$ does not dominate $y$. \par
+\quad If $y \notin K$, there is an $x \in K$ that dominates $y$.
+\end{document}
