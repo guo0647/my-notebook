@@ -1,15 +1,9 @@
 # my-notebook
 
-个人学习笔记的存档。
+Archive of personal study notes.
 
-这个仓库用于整理和保存学习过程中积累的笔记、资料链接、代码片段和阶段性总结，方便长期回顾与复盘。
+This repository is used to organize and preserve notes, resource links, code snippets, and periodic summaries accumulated during the learning process, making it convenient for long-term review and reflection.
 
-## 目录规划
+## Description
 
-- `notes/`：主题笔记
-- `resources/`：参考资料
-- `snippets/`：代码片段
-
-## 说明
-
-内容会随着学习进度持续更新。
+The content will be continuously updated as the learning progress
