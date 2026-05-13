@@ -1,96 +1,15 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amsmath,amssymb,mathtools}
-\usepackage{graphicx}
-\usepackage[margin=1in,headheight=14pt]{geometry}
-\usepackage{microtype}
-\usepackage{setspace}
-\usepackage{enumitem}
-\usepackage[most]{tcolorbox}
-\usepackage{xcolor}
-\usepackage{titlesec}
-\usepackage{fancyhdr}
-\usepackage{hyperref}
+% ===== Document metadata =====
+\newcommand{\coursecode}{MATH3911}
+\newcommand{\coursetitle}{Game Theory and Strategy}
+\newcommand{\notetitle}{Lecture Notes}
+\newcommand{\notedate}{May 6, 2026}
 
-\definecolor{headingblue}{HTML}{1F4E79}
-\definecolor{accentteal}{HTML}{2A7F78}
-\definecolor{softgray}{HTML}{F6F7F9}
-\definecolor{rulegray}{HTML}{D8DEE8}
-\definecolor{textgray}{HTML}{333333}
+\usepackage{../styles/notebook}
 
-\hypersetup{
-    colorlinks=true,
-    linkcolor=headingblue,
-    urlcolor=accentteal,
-    citecolor=headingblue,
-    pdfauthor={Game Theory and Strategy},
-    pdftitle={MATH3911 Notes}
-}
-
-\setstretch{1.14}
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{0.58em}
-\setlength{\abovedisplayskip}{0.65em}
-\setlength{\belowdisplayskip}{0.65em}
-\setlist{itemsep=0.2em,topsep=0.35em,leftmargin=2.2em}
-
-\titleformat{\section}
-    {\Large\bfseries\color{headingblue}}
-    {\thesection}{0.75em}{}
-    [\vspace{0.15em}\titlerule]
-\titleformat{\subsection}
-    {\large\bfseries\color{accentteal}}
-    {\thesubsection}{0.7em}{}
-\titlespacing*{\section}{0pt}{1.4em}{0.7em}
-\titlespacing*{\subsection}{0pt}{0.9em}{0.35em}
-
-\pagestyle{fancy}
-\fancyhf{}
-\lhead{\textsc{MATH3911}}
-\rhead{\textsc{Game Theory and Strategy}}
-\cfoot{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-
-\tcbset{
-    colback=softgray,
-    colframe=accentteal,
-    arc=1.5mm,
-    boxrule=0.6pt,
-    left=0.9em,
-    right=0.9em,
-    top=0.55em,
-    bottom=0.55em
-}
-
-\newcommand{\note}[1]{%
-    \begin{tcolorbox}[title=\textbf{Note},fonttitle=\bfseries,coltitle=textgray]
-        #1
-    \end{tcolorbox}
-}
-
-\title{\textbf{\Huge MATH3911}\\[0.35em]\Large Game Theory and Strategy}
-\author{}
-\date{May 6, 2026}
 \begin{document}
-\pagenumbering{gobble}
-\begin{titlepage}
-    \centering
-    \vspace*{0.22\textheight}
-    {\color{headingblue}\rule{0.75\textwidth}{0.8pt}\par}
-    \vspace{1.2em}
-    {\Huge\bfseries MATH3911\par}
-    \vspace{0.55em}
-    {\Large Game Theory and Strategy\par}
-    \vspace{1.0em}
-    {\large Lecture Notes\par}
-    \vspace{1.2em}
-    {\color{headingblue}\rule{0.75\textwidth}{0.8pt}\par}
-    \vfill
-    {\large May 6, 2026\par}
-\end{titlepage}
+\makenotestitle
 
 \pagenumbering{roman}
 \tableofcontents

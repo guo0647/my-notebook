@@ -1,0 +1,187 @@
+\NeedsTeXFormat{LaTeX2e}
+
+% ===== Metadata defaults =====
+\providecommand{\coursecode}{COURSE0000}
+\providecommand{\coursetitle}{Course Title}
+\providecommand{\notetitle}{Lecture Notes}
+\providecommand{\notedate}{\today}
+\providecommand{\notebookimagedir}{images}
+
+% ===== Packages =====
+\RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
+\RequirePackage{amsmath,amssymb,mathtools}
+\RequirePackage{graphicx}
+\RequirePackage[margin=1in,headheight=14pt]{geometry}
+\RequirePackage{microtype}
+\RequirePackage{setspace}
+\RequirePackage{enumitem}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{xcolor}
+\RequirePackage{listings}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{titlesec}
+\RequirePackage{fancyhdr}
+\RequirePackage{hyperref}
+
+% ===== Colors =====
+\definecolor{notebookprimary}{HTML}{1F4E79}
+\definecolor{notebooksecondary}{HTML}{3E6F8F}
+\definecolor{notebookrule}{HTML}{A9C2D6}
+\definecolor{notebooktext}{HTML}{222222}
+\definecolor{notebookmuted}{HTML}{4B5563}
+\definecolor{notebooksoft}{HTML}{F6F8FA}
+\definecolor{notebooknotesoft}{HTML}{F3F7FB}
+\definecolor{notebookintuitionsoft}{HTML}{F5F8FA}
+\colorlet{headingblue}{notebookprimary}
+\colorlet{accentteal}{notebooksecondary}
+\colorlet{noteblue}{notebooksecondary}
+\colorlet{intuitiongreen}{notebookmuted}
+\colorlet{softgray}{notebooksoft}
+\colorlet{notesoft}{notebooknotesoft}
+\colorlet{intuitionsoft}{notebookintuitionsoft}
+\colorlet{textgray}{notebooktext}
+\definecolor{codegray}{HTML}{F5F7FA}
+\colorlet{codeblue}{notebookprimary}
+\definecolor{codered}{HTML}{A83232}
+\colorlet{commentgray}{notebookmuted}
+
+% ===== PDF metadata and links =====
+\hypersetup{
+    colorlinks=true,
+    linkcolor=notebookprimary,
+    urlcolor=notebooksecondary,
+    citecolor=notebookprimary
+}
+
+\AtBeginDocument{%
+    \hypersetup{
+        pdfauthor={\coursetitle},
+        pdftitle={\coursecode\space \notetitle}
+    }%
+}
+
+% ===== General spacing =====
+\setstretch{1.14}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.58em}
+\setlength{\abovedisplayskip}{0.65em}
+\setlength{\belowdisplayskip}{0.65em}
+\setcounter{tocdepth}{2}
+\setlist{itemsep=0.2em,topsep=0.35em,leftmargin=2.2em}
+
+% ===== Section styling =====
+\titleformat{\section}
+    {\Large\bfseries\color{notebookprimary}}
+    {\thesection}{0.75em}{}
+    [\vspace{0.15em}{\color{notebookrule}\titlerule}]
+\titleformat{\subsection}
+    {\large\bfseries\color{notebooksecondary}}
+    {\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}
+    {\normalsize\bfseries\color{notebooktext}}
+    {\thesubsubsection}{0.65em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.7em}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.35em}
+\titlespacing*{\subsubsection}{0pt}{0.65em}{0.2em}
+
+% ===== Header and footer =====
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\textsc{\coursecode}}
+\rhead{\textsc{\coursetitle}}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{notebookrule}\hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\contentsname}{\textcolor{notebookprimary}{Contents}}
+
+% ===== SQL code blocks =====
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{codegray},
+    frame=single,
+    rulecolor=\color{accentteal},
+    framerule=0.4pt,
+    breaklines=true,
+    columns=fullflexible,
+    keepspaces=true,
+    numbers=left,
+    numbersep=0.8em,
+    numberstyle=\tiny\color{commentgray},
+    keywordstyle=\color{codeblue}\bfseries,
+    stringstyle=\color{codered},
+    commentstyle=\color{commentgray}\itshape,
+    showstringspaces=false,
+    tabsize=4
+}
+
+% ===== Reusable boxes =====
+\tcbset{
+    colback=notesoft,
+    colframe=noteblue,
+    arc=1.5mm,
+    boxrule=0.6pt,
+    left=0.9em,
+    right=0.9em,
+    top=0.55em,
+    bottom=0.55em
+}
+
+\newcommand{\note}[1]{%
+    \begin{tcolorbox}[
+        title=\textbf{Note},
+        fonttitle=\bfseries,
+        coltitle=white,
+        colbacktitle=noteblue
+    ]
+        #1
+    \end{tcolorbox}
+}
+
+\newcommand{\intuition}[1]{%
+    \begin{tcolorbox}[
+        title=\textbf{Intuition},
+        fonttitle=\bfseries,
+        coltitle=white,
+        colbacktitle=intuitiongreen,
+        colback=intuitionsoft,
+        colframe=intuitiongreen
+    ]
+        #1
+    \end{tcolorbox}
+}
+
+% ===== Figures =====
+\newcommand{\insertimage}[1]{%
+    \begin{center}
+        \includegraphics[width=0.52\textwidth]{#1}
+        \vspace{0.5em}
+    \end{center}
+}
+
+\newcommand{\insertcourseimage}[1]{%
+    \insertimage{\notebookimagedir/#1.png}
+}
+
+% ===== Title page =====
+\newcommand{\makenotestitle}{%
+    \pagenumbering{gobble}
+    \begin{titlepage}
+        \centering
+        \vspace*{0.22\textheight}
+        {\color{notebookrule}\rule{0.75\textwidth}{0.8pt}\par}
+        \vspace{1.2em}
+        {\Huge\bfseries\color{notebookprimary} \coursecode\par}
+        \vspace{0.55em}
+        {\Large\color{notebooktext} \coursetitle\par}
+        \vspace{1.0em}
+        {\large\color{notebookmuted} \notetitle\par}
+        \vspace{1.2em}
+        {\color{notebookrule}\rule{0.75\textwidth}{0.8pt}\par}
+        \vfill
+        {\large\color{notebookmuted} \notedate\par}
+    \end{titlepage}
+}
