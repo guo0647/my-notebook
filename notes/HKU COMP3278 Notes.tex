@@ -1,0 +1,783 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===== Document metadata =====
+\newcommand{\coursecode}{COMP3278}
+\newcommand{\coursetitle}{Introduction to Database Management Systems}
+\newcommand{\notetitle}{Lecture Notes}
+\newcommand{\notedate}{May 14, 2026}
+
+\usepackage{../styles/notebook}
+\renewcommand{\notebookimagedir}{COMP3278-images}
+
+\begin{document}
+\makenotestitle
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+\textbf{Drawbacks of storing data in a file system}
+\begin{enumerate}
+    \item [1.] Difficulty in accessing data
+    \item [2.] Data redundancy and inconsistency
+    \item [3.] Data isolation
+    \item [4.] Atomicity problems
+    \item [5.] Concurrent access problems
+    \item [6.] Integrity problem
+\end{enumerate}
+
+\textbf{Concepts supported by a DBMS}
+\begin{enumerate}
+    \item [1.] Data abstraction
+    \item [2.] Data modeling
+    \item [3.] Database languages
+\end{enumerate}
+
+\section{Entity-Relationship Model}
+\subsection{E-R Diagram}
+\subsubsection{Entity and Entity Set}
+\begin{itemize}
+    \item Rectangles - entity sets
+    \item Ellipses - attributes
+    \item Line between a rectangle and an ellipse - link between an attribute and an entity set
+\end{itemize}
+
+\subsubsection{Relationship and Relationship Set}
+Diamond - a set of relationships.
+
+\subsubsection{Mapping Cardinalities}
+Different mapping relationships:
+\insertcourseimage{2_1}
+
+\subsubsection{Participation Constraints}
+Total participation: \par
+each customer \textbf{must have an account}
+\insertcourseimage{2_2}
+
+Partial participation: \par
+not all customers participate in the owner relationship
+\insertcourseimage{2_3}
+
+\subsubsection{Keys}
+\begin{enumerate}
+    \item [1.] \textbf{Super Key} \par
+        A super key of an entity set is a set of one or more attributes whose value uniquely determine each entity. \par
+    
+    \item[2.] \textbf{Candidate Key} \par
+        A candidate key of an entity set is a minimal super key. \par
+        \note{Minimal means no redundant attributes, but does not require the size of the set to be minimal.} \par
+
+    \item[3.] \textbf{Primary Key} \par
+        Although several candidate keys may exist, one of the candidate keys is selected to be the primary key. \par
+        In the E-R Diagram, the \textbf{underlined attribute} is a primary key. \par
+
+\end{enumerate}
+
+\subsubsection{Different Attribute Types}
+\begin{enumerate}
+    \item [1.] Single v.s. Composite attributes
+        \insertcourseimage{2_4}
+
+    \item [2.] Single-valued v.s. Multi-valued attributes \par
+        Multi-valued attribute are represented by \textbf{double ellipses}.
+
+    \item[3.] Derived attributes \par
+        Values in this attribute can be \textbf{derived} from other attributes. \par
+        Derived attributes are represented by \textbf{dashed ellipses}.
+\end{enumerate}
+
+\subsubsection{Weak Entity Set}
+An entity set that does not have a primary key is referred to as a \textbf{weak entity set}. \par
+The existence of a weak entity set depends on the existence of an \textbf{identifying entity set}. \par
+\insertcourseimage{2_5}
+Weak entity set - double rectangle \\
+Relationship set - double diamond \\
+Discriminator - dashed underline \par
+
+\subsubsection{Role}
+\insertcourseimage{2_6}
+"manager" and "worker" are called \textbf{roles}. \par
+Rules of Cardinality and participation also holds. \par
+
+\subsubsection{Specialization}
+\insertcourseimage{2_7}
+Rules of participation also holds. \par
+Disjoint specialization: if an entity must belongs to one of the lower-level entity sets, then we use a keyword \textbf{Disjoint} to indicate it. \par
+
+\subsection{E-R Model to Relational Tables}
+\subsubsection{Attributes}
+\textbf{Flatten out composite attributes} by creating a separate attribute for each component.
+\insertcourseimage{2_8}
+
+A \textbf{multi-valued attribute} is represented by a separate table.
+\insertcourseimage{2_9}
+
+\subsubsection{Weak Entity Sets}
+\insertcourseimage{2_10}
+
+\subsubsection{Relationship Sets}
+\begin{enumerate}
+    \item [1.] A \textbf{many-to-many} relationship set is a table with columns for the primary keys of the participating entity sets.
+        \insertcourseimage{2_11}
+    
+    \item [2.]\textbf{Many-to-one} and \textbf{one-to-many} relationship sets that are total on the many-side can be represented by adding extra attributes to the many-side.
+        \insertcourseimage{2_12}
+    
+    \item [3.] For \textbf{one-to-one} relationship sets, either side can be chosen to act as the many-side.
+
+\end{enumerate}
+
+\subsubsection{Specialization}
+\textbf{Method 1: } The table for lower-level ent set contains the \textbf{primary key} of the higher-level entity set and local attributes. \par
+    
+\textbf{Method 2: } Form a table for each entity set with all local and inherited attributes. \par
+If the specialization is \textbf{total}, the generalized entity set may not require a table.
+
+\subsubsection{Foreign Key}
+A foreign key is a \textbf{referential constraint} between two tables. \par
+The foreign key can be used to:
+
+\begin{enumerate}
+    \item [1.] cross-reference tables in many-to-many relationships
+    \item [2.] handle weak entity sets' reliance on other entity set
+    \item [3.] handle ISA relationship
+    \item [4.] handle multivalue attributes
+\end{enumerate}
+
+\section{Structured Query Language (SQL)}
+\subsection{Create and Drop Table}
+\subsubsection{Create Table}
+\begin{lstlisting}
+    CREATE TABLE Branch
+    (
+    branch_id VARCHAR(15) NOT NULL,
+    name VARCHAR(30) NOT NULL,
+    asset INT UNSIGNED NOT NULL,
+    PRIMARY KEY(branch_id)
+    );
+\end{lstlisting}
+
+\subsubsection{Drop Table}
+\begin{lstlisting}
+    DROP TABLE #table;
+\end{lstlisting}
+The DBMS may reject drop instruction when the table is referenced by another table via some constraints. \par
+
+\subsubsection{Alter Table}
+Add columns / Remove a column / Add constraints:
+\begin{lstlisting}
+    ALTER TABLE Brach ADD / DROP / ADD PRIMARY KEY ...;
+\end{lstlisting}
+
+\subsubsection{Foreign Key}
+CREATE TABLE command:
+\begin{lstlisting}
+    CREATE TABLE Owner
+    (
+    customer_id VARCHAR(15),
+    account_id VARCHAR(15),
+    PRIMARY KEY(customer_id, account_id),
+    FOREIGN KEY(customer_id) REFERENCES Customer(customer_id),
+    FOREIGN KEY(account_id) REFERENCES Account(account_id)
+    );
+\end{lstlisting}
+
+ALTER TABLE command:
+\begin{lstlisting}
+    ALTER TABLE Owner
+    ADD FOREIGN KEY #key REFERENCES #table(#key);
+\end{lstlisting}
+
+\subsection{Insert, Delete and update}
+\subsubsection{Insert}
+\begin{lstlisting}
+    INSERT INTO #table VALUES (#value_in_1st_col, #value_in_2nd_col, ...);
+\end{lstlisting}
+
+\subsubsection{Delete}
+\begin{lstlisting}
+    DELETE FROM #table #condition --condition is optional
+\end{lstlisting}
+
+\subsubsection{Update}
+\begin{lstlisting}
+    UPDATE Account
+    SET balance = CASE --case command for conditional update
+    WHEN balance <= 500 THEN balance * 1.05
+    ELSE balance *1.06
+    END
+\end{lstlisting}
+
+\subsection{Querying}
+\subsubsection{Select}
+\begin{lstlisting}
+    SELECT (DISTINCT)  #key / #key*2+1 / * FROM #table --DISTINCT: eliminate duplicate, optional
+\end{lstlisting}
+
+\subsubsection{From}
+\begin{lstlisting}
+    SELECT * FROM #table1, #table2 --generate the Cartesian product of two tables, if joining condition not specified
+\end{lstlisting}
+
+\subsubsection{Where}
+The WHERE clause specifies conditions that the result must satisfy.
+
+\subsection{Renaming}
+We use keyword AS to signify renaming. 
+\begin{lstlisting}
+    SELECT DISTINCT Branch.name AS 'Branch_name'
+\end{lstlisting}
+
+\subsection{String Operations}
+`\%' matches any substring. \par
+`\_' matches any character. \par
+\note{Patterns are \textbf{case sensitive}}
+\begin{lstlisting}
+    SELECT name FROM Customer
+    WHERE address LIKE '%320%' --find names of all customers whose address includes '320'
+\end{lstlisting}
+
+\subsection{Ordering Results}
+ASC - ascending, DESC - descending.
+\begin{lstlisting}
+    SELECT * FROM #table
+    ORDER BY #key1 ASC / DESC, 
+             #key2 ASC / DESC; --applied if key1 is same
+\end{lstlisting}
+
+\subsection{Nested Query}
+\subsubsection{IN}
+\begin{lstlisting}
+    SELECT * FROM #table
+    WHERE #key (NOT) IN (
+        #result_of_subquery
+    )
+\end{lstlisting}
+\note{
+In SQL, \texttt{IN} tests whether a value belongs to a set. If a subquery returns one column, \texttt{IN} can be used; if it returns multiple columns, plain \texttt{IN} is not applicable.
+}
+
+\subsubsection{SOME and ALL}
+\begin{lstlisting}
+    WHERE #key > SOME / ALL (subquery)
+\end{lstlisting}
+SOME: satisfy for any result in subquery $i.e.$ key > (SELECT MIN($\dots$) $\dots$) \par
+ALL: satisfy for all results in subquery $i.e.$ key > (SELECT MAX($\dots$) $\dots$) \par
+\note{If result of subquery is empty, then `> SOME / ALL' return false / true, while MIN / MAX return NULL, and comparison with NULL results UNKNOWN.
+}
+
+\subsubsection{EXISTS}
+EXISTS is a boolean set-comparison operator that returns false if the input set is empty.
+
+\subsection{Aggregation}
+Aggregate functions: AVG, MIN, MAX, SUM, COUNT. \par
+Aggregation function can be applied to \textbf{a group of sets of tuples} by using GROUP BY clause. \par
+HAVING states a condition that applies to \textbf{groups} rather than to tuples. \par
+\intuition{
+In SQL, \texttt{WHERE} filters rows before grouping, while \texttt{HAVING} filters groups after grouping.
+}
+
+\begin{lstlisting}
+    SELECT branch_id, AVG(balance)
+    FROM Account
+    GROUP BY branch_id
+    HAVING AVG(balance) >= 650;
+\end{lstlisting}
+
+\subsection{Join}
+\begin{lstlisting}
+    SELECT *
+    FROM #table1 JOIN / LEFT OUTER JOIN / RIGHT OUTER JOIN / FULL JOIN #table2
+    ON #key1 = #key2;
+\end{lstlisting}
+e.g. LEFT OUTER JOIN, even if left table record does not have matching records in right table, will still output the tuple with null values for the columns of the right table.
+\insertcourseimage{3_1}
+
+\note{
+JOIN operations first evaluate the condition specified in the ON clause to determine whether tuples from the two tables match. 
+
+INNER JOIN keeps only the matched tuples. \par
+LEFT OUTER JOIN additionally keeps unmatched tuples from the left table. \par
+RIGHT OUTER JOIN additionally keeps unmatched tuples from the right table. \par
+FULL OUTER JOIN additionally keeps unmatched tuples from both tables.
+}
+
+\intuition{
+If the ON condition is always true (e.g. ON 1=1), then every tuple in one table matches every tuple in the other table. As a result, all JOIN operations degenerate into a Cartesian product (CROSS JOIN).
+}
+
+\subsection{Set Operations}
+\begin{lstlisting}
+    SELECT #key1 FROM #table1, table2 WHERE #condition1
+    UNION / INTERSECT / EXCEPT 
+    SELECT #key1 FROM #table1, table2 WHERE #condition2
+\end{lstlisting}
+Note: Duplicates are eliminated when two sets are unified.
+
+\subsection{NULL Value}
+Use predicate IS NULL to check null values.
+\begin{lstlisting}
+    SELECT name FROM employees 
+    WHERE salary IS NULL
+\end{lstlisting}
+NULL in arithmetic expression $\rightarrow$ NULL \par
+NULL in comparison $\rightarrow$ UNKNOWN \par
+NULL in WHERE or HAVING clause $\rightarrow$ UNKNOWN \par
+Use P \textbf{IS UNKNOWN} to check if P is unknown. \par
+
+Three valued logic: \par
+\insertcourseimage{3_2}
+
+All aggregate operations except COUNT(*) ignore tuples with null values.
+
+\subsection{Views}
+Views can hide certain data from the view of certain users.
+
+\subsection{Authorization}
+The DBA can grant access/update authorization to users.
+
+\subsection{Assertion}
+An \textbf{assertion} ensures a certain condition will always exist in the database. \par
+
+\section{Relational Algebra}
+\subsection{Basic Operators}
+\subsubsection{Selection}
+\[
+\sigma_p(R) = \left\{t | t \in R \land p(t) \right\}
+\]
+Select and return a table where elements satisfy $p$.
+
+\subsubsection{Projection}
+\[
+\pi_{A_1, A_2, \dots, A_K}(R)
+\]
+A copy of $R$ with only listed attributes $A_1$ to $A_k$.
+
+\subsubsection{Union}
+\[
+R \cup S = \left\{t | t \in R \lor t \in S \right\}
+\]
+$R$ and $S$ must have the \textbf{same number of attributes} and \textbf{attribute data types are compatible}.
+
+\subsubsection{Set Difference}
+\[
+R - S = \left\{t | t \in R \land t \notin S \right\}
+\]
+$R$ and $S$ must have the \textbf{same number of attributes} and \textbf{attribute data types are compatible}.
+
+\subsubsection{Cartesian Product}
+\[
+R \times S = \left\{tq | t \in R \land q \in S \right\}
+\]
+No attributes with a common name in $R$ and $S$.
+
+\subsubsection{Rename}
+\[
+\rho_x(E)
+\]
+Rename operator allows us to name and refer to the results of relational-algebra expressions.
+
+\subsection{Additional Operators}
+All additional operators can be expressed by basic operations.
+
+\subsubsection{Set Intersection}
+\[
+R \cap S = R - (R - S)
+\]
+$R$ and $S$ must have the \textbf{same number of attributes} and \textbf{attribute data types are compatible}.
+
+\subsubsection{Natural Join}
+\[
+r \bowtie s = \pi_{R \cup S}(\sigma_{\underbrace{r.A_1 = s.A_1 \land r.A_2 = s.A_2 \land \dots \land r.A_n = s.A_n}_{\text{requires the common attributes to be equated}}}(r \times s))
+\]
+where
+\[
+R \cap S = \left\{A_1, A_2, \dots, A_n \right\}
+\]
+Commutative: $r \bowtie s = s \bowtie r$
+
+\note{If there is no common attribute, then natural join is the same as Cartesian product.}
+
+\subsubsection{Assignment}
+Assigning parts of relational-algebra expression to \textbf{temporary relation variables}. For example: \par
+\quad temp1 $\leftarrow \pi_a(R)$ \par
+\quad temp2 $\leftarrow \pi_b(R)$ \par
+\quad result $\leftarrow$ temp1 - temp2
+
+\subsubsection{Left Outer Join}
+\[
+R \bowtie_{\text{left}} S = (R \bowtie S) \cup (R - \pi_R(R \bowtie S)) \underbrace{\times \left\{(null, \dots, null) \right\}}_{\text{add null value to extra attributes}}
+\]
+\note{$\times$ is executed before $\cup$}
+
+\subsubsection{Right Outer Join}
+\[
+R \bowtie_{\text{right}} S = (R \bowtie S) \cup (S - \pi_R(R \bowtie S)) \times \left\{(null, \dots, null) \right\}
+\]
+
+\subsubsection{Division}
+Let $S \subseteq R$,
+\[
+R \div S = \left\{t | t \in \pi_{R-S}(R) \land (\forall s \in S, ((t \cup s) \in R)) \right\}
+\]
+e.g. $A$: Enroll\_record(student, course), $B$: Course(course), \par
+\quad Then $A \div B$: Find students who enrolled in all courses.
+
+\subsection{Extended Operators}
+\[
+{}_{G_1, G_2, \dots, G_n} g_{F_1(A_1), F_2(A_2), \dots, F_n(A_n)}(E)
+\]
+\textbf{$E$} - a relationship \par
+    
+\textbf{$G_1, \dots G_n$} - attributes used to form groups \par
+Tuples with the same values in $G_1$ to $G_n$ are put into the same group ($i.e.$, the attributes after GROUP BY in SQL). \par
+
+\textbf{$F_i(A_i)$} - an aggregate function applied on an attribute 
+
+Example: \insertcourseimage{4_1}
+
+\subsection{Equivalence Rules}
+\begin{enumerate}
+    \item [\textbf{Rule 1 }] Only the final operations in a sequence of projection operations are needed.
+        \[
+        \pi_{L_1}(\pi_{L_2}(\dots(\pi_{L_n}(E))\dots)) = \pi_{L_1}(E)
+        \]
+    
+    \item [\textbf{Rule 2 }] Conjunctive selection operations can be deconstructed into a sequence of individual selections.
+        \[
+        \sigma_{p_1 \land p_2}(E) = \sigma_{p_1}(\sigma_{p_2}(E))
+        \]
+
+    \item [\textbf{Rule 3 }] Selection operations are commutative.
+        \[
+        \sigma_{p_1}(\sigma_{p_2}(E)) = \sigma_{p_2}(\sigma_{p_1}(E))
+        \]
+
+    \item [\textbf{Rule 4 }] Natural join operations are associative.
+        \[
+        (E_1 \bowtie E_2) \bowtie E_3 = E_1 \bowtie (E_2 \bowtie E_3)
+        \]
+
+    \item [\textbf{Rule 5 }] The selection operation distributes over the natural join operation under the following two conditions:
+    
+    \item [\textbf{Rule 5a }] when all the attributes in selection condition involve only the attributes of one of the expression being joined
+        \[
+        \sigma_p(E_1 \bowtie E_2) = \sigma_p(E_1) \bowtie E_2
+        \]
+
+    \item [\textbf{Rule 5b }] when selection condition $p_1$ involves only the attributes of $E_1$ and $p_2$ involves only the attributes of $E_2$
+        \[
+        \sigma_{p_1 \land p_2}(E_1 \bowtie E_2) = \sigma_{p_1}(E_1) \bowtie \sigma_{p_2}(E_2)
+        \]
+
+    \item [\textbf{Rule 6 }] The projection operation can distribute over the natural join operation.
+        \[
+        \pi_{L_1 \cup L_2}(E_1 \bowtie E_2) = \pi_{L_1 \cup L_2}(\pi_{L_1 \cup L_3}(E_1) \bowtie \pi_{L_2 \cup L_3}(E_2))
+        \]
+
+    \item [\textbf{Rule 7 }] The set operations union and intersections are Commutative.
+        \[
+        E_1 \cup / \cap E_2 = E_2 \cup / \cap E_1 
+        \]
+    
+    \item [\textbf{Rule 8 }] The set operations union and intersections are associative.
+        \[
+        (E_1 \cup / \cap E_2) \cup / \cap E_3 = E_1 \cup / \cap (E_2 \cup / \cap E_3)
+        \]
+
+    \item [\textbf{Rule 9 }] The selection operation distributes over the union, intersection and set difference operations.
+        \[
+        \sigma_p(E_1 \cup / \cap / - E_2) = \sigma_p(E_1) \cup / \cap / - \sigma_p(E_2)
+        \]
+
+    \item [\textbf{Rule 10 }] The projection operation distributes over the union operation.
+        \[
+        \pi_L(E_1 \cup E_2) = \pi_L(E_1) \cup \pi_L(E_2)
+        \]
+\end{enumerate}
+
+\section{Functional Dependency}
+\textbf{Functional dependency (FD)} is a constraint between two sets of attributes in a relation from a database. \par
+It requires that the values of a certain set of attributes \textbf{uniquely determine the values for} another set of attributes.
+
+\subsection{Armstrong's Axioms}
+\begin{enumerate}
+    \item [\textbf{1. }] \textbf{Reflexivity} - if $\beta \subseteq \alpha$, then $\alpha \rightarrow \beta$.
+    
+    \item [\textbf{2. }] \textbf{Transitivity} - if $\alpha \rightarrow \beta$ and $\beta \rightarrow \gamma$, then $\alpha \rightarrow \gamma$.
+    
+    \item [\textbf{3. }] \textbf{Augmentation} - if $\alpha \rightarrow \beta$, then $\gamma \alpha \rightarrow \gamma \beta$.
+
+    \item [\textbf{4. }] \textbf{Union}- if $\alpha \rightarrow \beta$ and $\alpha \rightarrow \gamma$, then $\alpha \rightarrow \beta \gamma$.
+
+    \item [\textbf{5. }] \textbf{Decomposition} - if $\alpha \rightarrow \beta \gamma$, then $\alpha \rightarrow \beta$ and $\alpha \rightarrow \gamma$.
+    
+    \item [\textbf{6. }] \textbf{Pseudo-transitivity} - if $\alpha \rightarrow \beta$ and $\gamma \beta \rightarrow \delta$, then $\alpha \gamma \rightarrow \delta$.
+\end{enumerate}
+
+\section{Normalization}
+\subsection{Closure Set}
+\textbf{Attribute set closure $\alpha^+$}
+The \textbf{closure of $\alpha$} ($\alpha^+$) is the set of attributes that can be \textbf{functionally determined by $\alpha$}.
+\[
+F = \left\{A \rightarrow B, B \rightarrow C \right\}
+\] 
+\[
+\left\{A \right\}^+ = \left\{A, B, C \right\}
+\] \par
+
+\textbf{FD closure $F^+$}
+The set of \textbf{ALL functional dependencies} that can be logically implied by $F$ is called the closure of $F$ ($F^+$)
+still,
+\[
+F = \left\{A \rightarrow B, B \rightarrow C \right\}
+\] 
+\[
+F^+ = \left\{A \rightarrow A, A \rightarrow B, A \rightarrow C, B \rightarrow B, B \rightarrow C, C \rightarrow C, A \rightarrow AB \dots \right\}
+\]
+
+The elements in $A^+$ are attributes. \par
+The elements in $F^+$ are dependencies. \par
+
+\subsection{Decomposition}
+\subsubsection{Lossless-join Decomposition}
+Consider a decomposition of $R$ into $R_1$ and $R_2$, \par
+schema of $R$ = schema of $R_1$ $\cup$ schema of $R_2$. \par
+Let schema of $R_1$ $\cap$ schema of $R_2$ be $R_1$ and $R_2$ 's common attributes. \par
+A decomposition of $R$ into $R_1$ and $R_2$ is lossless-join if and only if at least on of the following dependencies is in $F^+$. \par
+\[
+\begin{cases}
+    \text{schema of } R_1 \cap \text{schema of } R_2 \rightarrow \text{schema of } R_1 \\
+    \text{schema of } R_1 \cap \text{schema of } R_2 \rightarrow \text{schema of } R_2
+\end{cases}
+\]
+
+\subsubsection{Dependency Preserving Decomposition}
+Trivial FD: $\gamma \subseteq \alpha$ ($A \rightarrow A, AB \rightarrow A, \dots $) \\
+Nontrivial FD : $\gamma \nsubseteq \alpha $ ($A \rightarrow C, AB \rightarrow C, \dots $) \par
+
+\textbf{Example:} \\
+Consider $R(A, B, C, D), F = \left\{A \rightarrow B, B \rightarrow CD\right\}$,
+\[
+F^+ = \left\{\underbrace{A \rightarrow B, B \rightarrow CD, A \rightarrow CD}_{\text{nontrivial FD}} \text{(by transitivity), trivial FDs}\right\}
+\]
+If $R$ is decomposed to $R_1(A, B), R_2(B, C, D)$:
+\[
+F_1 = \left\{A \rightarrow B, \text{trivial FDs} \right\} \text{, the projection of $F^+$ on $R_1$}
+\]
+\[
+F_2 = \left\{B \rightarrow CD, \text{trivial FDs} \right\} \text{, the projection of $F^+$ on $R_2$}
+\]
+
+Here, $(F_1 \cup F_2)^+ = F^+$ \par
+
+\note{The + on the l.h.s. ensures the nontrivial FD ($A \rightarrow CD$) can be concluded in the example}
+
+A decomposition is \textbf{dependency preserving} if and only if:
+\[
+(F_1 \cup F_2 \cup \dots \cup F_n)^+ = F^+
+\]
+
+\subsection{Boyce-Codd Normal Form (BCNF)}
+A relation $R$ has no redundancy, or in Boyce-Codd Normal Form (BCNF), if the following is satisfied: \par
+For all FDs in $F^+$ of the form $\alpha \rightarrow \beta$, where $\alpha \subseteq R$ and $\beta \subseteq R$, at least one of the following holds: \par
+\[
+\begin{cases}
+    \alpha \rightarrow \beta \text{ is trivial } (i.e., \beta \subseteq \alpha) \\
+    \alpha \text{ is a key (superkey) for } R
+\end{cases}
+\]
+
+\note{If a table $R$ has no non-trivial functional dependencies, then $R$ is in BCNF.}
+\subsection{Normalization}
+When we decompose a relation $R$ with a set of functional dependencies $F$ into $R_1, R_2, \dots, R_n$, we try to meet the following goals:
+\begin{enumerate}
+    \item [1. ] Lossless join (See 6.2.1)
+    \item [2. ] Dependency preserving (See 6.2.2)
+    \item [3. ] No redundancy - The decomposed $R_i$ should be in BCNF (See 6.3)
+\end{enumerate}
+\note{It is not always possible to satisfy the three goals.}
+
+\subsection{BCNF Decomposition Algorithm}
+while the result is not in BCNF:
+\begin{enumerate}
+    \item [] step 1: Find a table $R_i$ not in BCNF, where $\alpha \rightarrow \beta$ violates BCNF properties.
+
+    \item [] step 2: Create a relation with only $\alpha$ and $\beta$.
+
+    \item [] step 3: Create a relation containing $R_i$ but with $\beta$ removed. 
+
+\end{enumerate}
+
+\section{Indexing}
+\subsection{Basic Concepts}
+Index is used to speed up access to desired data. \par
+
+\textbf{2 classes of indices:}
+Ordered Indices - Search keys are sorted in the index (e.g. $B^+$-tree) \par
+Hash Indices - Search keys are distributed over different buckets using a hash function (e.g. extendable hash-index) \par
+
+\subsection{\texorpdfstring{$B^+$-tree}{B+-tree}}
+All paths from root to leaf are of the same length ($i.e.$, balanced)
+
+\subsubsection{Node}
+A node in $B^+$ tree contains up to $n-1$ \textbf{search-key values} and $n$ pointers.
+\insertcourseimage{7_1}
+
+\begin{enumerate}
+    \item [1. ] Leaf node
+        A leaf node has \textbf{at least $\lceil (n-1)/2 \rceil$} and at most $(n-1)$ values, where n is the number of pointers. \par
+        The last pointer is used to chain together the leaf nodes in search-key order.
+
+    \item [2. ] Non-leaf node
+        Non-leaf nodes must hold at least $\lceil n/2 \rceil$, and at most $n$ pointers.
+
+\end{enumerate}
+
+\subsubsection{Search}
+Traverse from root to leaf $\rightarrow$ Search in the leaf node $\rightarrow$ Follow the pointer in the leaf node to retrieve the record
+
+\subsubsection{Insertion}
+If a leaf node is not full yet, simply insert. \par
+If a leaf node is full, \textbf{node splitting} has to be performed.
+
+\textbf{Step 1.} Create a new node and distribute the first $\lceil n/2 \rceil$ records to one node and the remaining to the other node. \par
+\textbf{Step 2.} Parent nodes (non-leaf nodes) have to be updated accordingly.
+
+Example: Insert `1' in the above $B^+$-tree. \par
+
+\insertcourseimage{7_2}
+\insertcourseimage{7_3}
+
+\subsubsection{Deletion}
+Find and remove the record from the file. \par
+If the leaf node has too few entries due to the removal: \par
+\qquad Try to \textbf{merge} the node with its sibling node. \par
+\qquad Try to \textbf{redistribute} the entries if merging fails. \par
+
+\subsection{Hashing}
+Hashing is a kind of un-ordered indices, where there is \textbf{no order} within the index entries. \par
+
+\subsubsection{Static Hashing}
+e.g. Hash function: K mod 4.
+
+Problem: database grows with time. If the initial number of buckets is too small, performance will degrade due to too much overflow.
+
+\subsubsection{Dynamic Hashing (Extendable Hashing)}
+The \textbf{bucket address table} has a \textbf{hash prefix} value $n$.
+The first-$n$ bits of the hash values are used to locate the address table entry for the pointer pointing to the bucket.
+
+In extendable hashing, when a bucket is full, we need to add one more bucket, there are two options: \par
+
+\begin{enumerate}
+    \item [1. ] Add a bucket and increase the number of bits that we use from the hash value.
+
+    \item [2. ] Add as overflow bucket (when 1. cannot solve the problem).
+
+\end{enumerate}
+
+Each bucket $j$ contains: \par
+\quad The records; An integer $i_j$ \par
+All records in the $j$th bucket share the same first-$i_j$ bits in the hash function. \par
+
+\textbf{Splitting a bucket} \par
+If the hash prefix = $i_j$: increase has prefix by 1, and double the size of the bucket address table. \par
+If the hash prefix > $i_j$: create a new bucket $z$, and set $i_j$ and $i_z$ to old $i_j + 1$. 
+
+\subsubsection{\texorpdfstring{Hash Indexes v.s. $B^+$-tree}{Hash Indexes v.s. B+-tree}}
+Hash indexes: used only for equality comparisons that use `=' (but very fast)
+$B^+$-tree: used for comparisons such as < that find a range of values, also in ORDER BY operations.
+
+\section{Collaborative Filtering}
+\subsection{Measuring Similarity}
+\subsubsection{Vector Cosine-based Similarity}
+\[
+\cos \theta = \frac{r_{u,x} r_{v,x} + r_{u,y} r_{v,y}}{\left\|\vec{u}\right\| \left\|\vec{v}\right\|} = \frac{r_{u,x} r_{v,x} + r_{u,y} r_{v,y}}{\sqrt{r_{u,x}^2 + r_{u,y}^2} \sqrt{r_{v,x}^2 + r_{v,y}^2}}
+\]
+
+\subsubsection{Correlation-based Similarity}
+We use $cos \theta_{corr}$ to model the correlation-based similarity between two users. \par
+Idea of normalization: consider the \textbf{variation} w.r.t. the average rating of each user. \par
+\[
+\overrightarrow{u - \bar{r}_u} = (r_{u,x} - \bar{r}_u, r_{u,y} - \bar{r}_u)
+\]
+\[
+\overrightarrow{v - \bar{r}_v} = (r_{v,x} - \bar{r}_v, r_{v,y} - \bar{r}_v)
+\]
+\[
+corr(u,v) = \cos \theta_{corr} = \frac{(\overrightarrow{u - \bar{r}_u}) \cdot (\overrightarrow{v - \bar{r}_v})}{\left\|\overrightarrow{u - \bar{r}_u}\right\| \left\|\overrightarrow{v - \bar{r}_v}\right\|}
+\]
+
+\note{The correlation reflects the extent to which two variables are \textbf{linearly related} with each other.}
+
+The correlation is called the \textbf{Pearson correlation coefficient}. In collaborative filtering, we use the Pearson correlation coefficient as the \textbf{weight} in the prediction model.
+
+\subsection{Computing Prediction}
+Target: calculate a prediction $P_{a,i}$ for the user $a$'s rating on item $i$. \par
+\[
+P_{a,i} = \bar{r}_a + \frac{\sum_{u \in U} w_{a,u} (r_{u,i} - \bar{r}_u)}{\sum_{u \in U} |w_{a,u}|}
+\]
+where $w_{a,u}$ is the correlation-based similarity between user $a$ and user $u$, and $U$ is the set of users who have rated item $i$.
+
+\section{Vector Database}
+Vector database = Vector storage + Semantic search \par
+\insertcourseimage{9_1}
+
+\textbf{Example: visual product search} \par
+take photo $\rightarrow$ find matching product \par
+Size of the database: \par
+N = 100B = 100,000,000,000 vectors \par
+Each vector is large: D = ~1000 floats \par
+Requirements: support fast update, query fresh data \par
+
+General idea:
+Extract feature vectors (\textbf{embeddings}) from product images $\rightarrow$ store the vectors in a vector database $\rightarrow$ given a query image, extract its embedding and search for similar vectors in the database.
+
+\textbf{Example: RAG question answering} \par
+Retrieval-augmented generation (RAG) question answering system:
+\begin{enumerate}
+    \item [1. ] Generate document embeddings
+    \item [2. ] To query: generate embedding of user query
+    \item [3. ] Get relevant documents
+    \item [4. ] Create prompt to incorporate documents as context
+    \item [5. ] Generate answer with LLM
+\end{enumerate}
+\insertcourseimage{9_2}
+
+\textbf{RDBMS v.s. VDBMS} \par
+\[
+\begin{array}{l|l|l}
+    \hline\hline
+    & \text{Traditional RDBMS} & \text{Vector Database (VDBMS)} \\
+    \hline
+    \text{Data} & \text{Records} & \text{Vectors} \\
+    \hline
+    \text{Query} & \text{Relational algebra} & \text{Nearest neighbor + simple filtering} \\
+    \hline
+    \text{Updates} & \text{part of record, multiple records} & \text{entire vector, single vector} \\
+    \hline
+\end{array}
+\]
+
+\textbf{HNSW}
+Hierarchically Navigable Small World (HNSW) is a graph-based index structure for efficient nearest neighbor search in high-dimensional spaces. \par
+HNSW combines two ideas:
+\begin{itemize}
+    \item Navigable Small World (NSW)
+    \item Hierarchical skips 
+\end{itemize}
+\insertcourseimage{9_3}
+
+\begin{enumerate}
+    \item [1. ] Navigable Small World (NSW) \par
+        Search path is $O(\log N)$
+        \insertcourseimage{9_4}
+
+    \item [2. ] Skip list \par
+        \insertcourseimage{9_5}
+
+\end{enumerate}
+
+\end{document}
