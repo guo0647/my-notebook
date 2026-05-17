@@ -5,7 +5,7 @@ Archive of personal study notes and GitHub publication copies.
 ## Structure
 
 - `styles/`: shared LaTeX style files, including `notebook.sty`.
-- `notes/`: published course notes and any note-specific assets.
+- `notes/`: published course notes and any note-specific assets. Image asset folders use the same school-prefixed course naming as the notes, e.g. `HKU COMP2120 images/`.
 
 ## Build
 
