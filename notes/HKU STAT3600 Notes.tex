@@ -1,0 +1,1028 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===== Document metadata =====
+\newcommand{\coursecode}{STAT3600}
+\newcommand{\coursetitle}{Linear Statistical Analysis}
+\newcommand{\notetitle}{Lecture Notes}
+\newcommand{\notedate}{May 16, 2026}
+
+\usepackage{../styles/notebook}
+
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator{\tr}{tr}
+
+\begin{document}
+\makenotestitle
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+\section{Matrix}
+\subsection{Some Matrix Definition}
+Idempotent: \\
+$A$ is idempotent when $A^2 = A$ \par
+
+Trace: \\
+For an $n \times n$ matrix $A$, the \textbf{trace} is defined as the sum of its diagonal elements \par
+\[
+\tr(A) = \sum_{i=1}^{n} a_{ii}
+\]
+Moreover, we have $\tr(AB) = \tr(BA)$ \par
+
+Quadratic form: \\
+Let $W$ be a function of $n$ variables $Y_1, \dots, Y_n$, where
+\[
+W = \sum_{j=1}^{n} \sum_{i=1}^{n} a_{ij} Y_i Y_j = Y^T A Y
+\]
+$A$ is an $n \times n$ matrix with elements $A = (a_{ij})$
+
+\subsection{Statistical Expression}
+$X$ and $Y$ are column vectors. \par
+Covariance matrix:
+\[
+Cov(X, Y) = \E(XY^T) - \E(X) \E(Y^T) 
+\]
+Variance-covariance matrix:
+\[
+Var(Y) = \Sigma = \E(YY^T) - \E(Y) \E(Y^T)
+\]
+
+\subsection{Multivariate Normal Distribution}
+\textbf{Theorem 2.1}: Let $Y \sim N_n(\mu, \Sigma)$ and suppose that $A$ is a $k \times n$ matrix and $b$ is a $k \times 1$ vector; then \par
+\[
+AY + b \sim N_k(A\mu + b, A \Sigma A^T)
+\] 
+
+\textbf{Theorem 2.2} (Independence Theorem): If $Y \sim N_n(\mu, \Sigma)$ and $A$ is a constant $n \times n$ positive semi-definite and symmetric matrix, and $B$ is a constant $d \times n$ matrix, then $Y^TAY$ is independent of $BY$ if $A \Sigma B^T = 0$. \par
+
+\textbf{Theorem 2.3} (\textbf{Cochran's theorem}): Let $Y \sim N_n(0, \sigma^2 I)$, and $A_1, \dots, A_m$ are $n \times n$ symmetric matrices such that:
+
+\begin{enumerate}
+    \item [(i)]
+        \[
+        \sum_{i=1}^m A_i = I
+        \]
+    \item [(ii)]
+        $A_i^2 = A_i$ for all $i$, then $Y^TA_1Y, \dots, Y^TA_mY$ are independent variables with
+        \[
+        Y^TA_iY \sim \sigma^2 \chi_{r_i}^2, i = 1, \dots, m
+        \]
+        where $r_i = \tr(A_i)$ \par
+
+\end{enumerate}
+
+\subsection{Distributions Related to Normal Distribution}
+\begin{enumerate}
+    \item [1.]
+        $Z \sim N(0, 1)$
+        \[
+        U = Z_1^2 + \dots + Z_k^2 \sim \chi_k^2
+        \]
+        $\E(U) = k, Var(U) = 2k$
+
+    \item [2.]
+        $Z \sim N(0, 1), U \sim \chi_k^2$
+        \[
+        T = \frac{Z}{\sqrt{U/k}} \sim t_k
+        \]
+    
+    \item [3.]
+        $U_1 \sim \chi_{k_1}^2, U_2 \sim \chi_{k_2}^2$, and $U_1$ is independent of $U_2$
+        \[
+        \frac{U_1/k_1}{U_2/k_2} \sim F_{k_1, k_2}
+        \]
+        Moreover, if $T \sim t_k$, then $T^2 \sim F_{1,k}$
+\end{enumerate}
+
+\section{Simple Linear Regression}
+\subsection{Model}
+\[
+Y = \underbrace{f(X)}_{\text{systematic component}} + \underbrace{\varepsilon}_{\text{random component}}
+\]
+
+The simplest form is the \textbf{simple linear regression} (SLR) given by
+\[
+Y_i = \beta_0 + \beta_1 x_i + \epsilon_i, i = 1, \dots, n
+\]
+where $\beta$'s are the regression parameters, and $\epsilon_i$'s are stochastic disturbances or random errors which are not observable. \par
+
+\textbf{Assumptions}:
+\begin{itemize}
+    \item (A1) $\E$($\epsilon_i$) = 0 that implies $\E$($Y_i | X = x_i$)
+    \item (A2) Var($\epsilon_i$) = $\sigma^2$ for all $i$ (constant variance)
+    \item (A3) The $\epsilon_i$'s are uncorrelated (Cov($\epsilon_i, \epsilon_j$) = 0 for $i \neq j$)
+\end{itemize}
+
+\subsection{Least Squares Estimator}
+\[
+\hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x}
+\]
+\[
+\hat{\beta}_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2} = \frac{S_{XY}}{S_{XX}}
+\]
+\[
+\hat{\beta} = 
+\begin{pmatrix}
+\hat{\beta}_0 \\
+\hat{\beta}_1
+\end{pmatrix}
+= (X^\top X)^{-1} X^\top Y
+\]
+
+\subsection{\texorpdfstring{Estimation of $\sigma^2$}{Estimation of sigma squared}}
+\[
+\hat{\sigma}^2 = MSE = \frac{SSE}{n-2}
+\]
+
+\subsection{\texorpdfstring{Inference about $\beta$}{Inference about beta}}
+\[
+\text{se}(\hat{\beta}_0) = \sqrt{\hat{\sigma}^2 (\frac{1}{n} + \frac{\bar{x}^2}{S_{XX}})}
+\]
+\[
+\text{se}(\hat{\beta}_1) = \sqrt{\hat{\sigma}^2 \frac{1}{S_{XX}}}
+\]
+\par
+$100(1 - \alpha)\%$ C.I. for $\beta_j$: $\hat{\beta}_j \pm \text{se}(\hat{\beta}_j) t_{\alpha/2, n-2}$ \par
+
+Hypothesis test: $H_0: \beta_j = \beta_{j_0}$ vs. $H_1: \beta_j \neq \beta_{j_0}$
+\[
+T = \left| \frac{\hat{\beta}_j - \beta_{j_0}}{\text{se}(\hat{\beta}_j)}\right|
+\]
+Reject the null hypothesis $H_0$ iff $T > t_{\alpha/2, n-2}$ \par
+
+\subsection{Prediction}
+$100(1 - \alpha)\%$ C.I. is: \par
+\textbf{Mean Response} $\E(Y)$ \par
+\[
+\hat{\beta}_0 + \hat{\beta}_1 x_0 \pm t_{\alpha/2, n-2} \hat{\sigma} \left[x_0^T (X^TX)^{-1} x_0\right]^{1/2}
+\]
+i.e.
+\[
+\hat{\beta}_0 + \hat{\beta}_1 x_0 \pm t_{\alpha/2, n-2} \hat{\sigma} \left[\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{XX}}\right]^{1/2}
+\]
+
+\textbf{Individual Response} \par
+\[
+\hat{\beta}_0 + \hat{\beta}_1 x_0 \pm t_{\alpha/2, n-2} \hat{\sigma} \left[x_0^T (X^TX)^{-1} x_0 + 1\right]^{1/2}
+\]
+i.e.
+\[
+\hat{\beta}_0 + \hat{\beta}_1 x_0 \pm t_{\alpha/2, n-2} \hat{\sigma} \left[\frac{1}{n} + \frac{(x_0 - \bar{x})^2}{S_{XX}} + 1\right]^{1/2}
+\]
+
+\section{Multiple Linear Regression}
+In the matrix form, 
+\[
+Y = X \beta + \epsilon, \quad \epsilon \sim N(0, \sigma^2 I)
+\]
+where,
+
+\[
+Y=
+\begin{pmatrix}
+y_1\\
+y_2\\
+\vdots\\
+y_n
+\end{pmatrix},
+\quad
+X=
+\begin{pmatrix}
+1 & x_{11} & \cdots & x_{1p}\\
+1 & x_{21} & \cdots & x_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+1 & x_{n1} & \cdots & x_{np}
+\end{pmatrix},
+\quad
+\beta=
+\begin{pmatrix}
+\beta_0\\
+\beta_1\\
+\vdots\\
+\beta_p
+\end{pmatrix},
+\quad
+\epsilon=
+\begin{pmatrix}
+\epsilon_1\\
+\epsilon_2\\
+\vdots\\
+\epsilon_n
+\end{pmatrix}.
+\]
+
+\subsection{Least Squares Estimator}
+\[
+\hat{\beta} = 
+\begin{pmatrix}
+\hat{\beta}_0 \\
+\hat{\beta}_1 \\
+\vdots \\
+\hat{\beta}_p
+\end{pmatrix}
+= (X^T X)^{-1} X^T Y
+\]
+
+\subsection{Inference about Parameters}
+SSE$\sim \sigma^2 \chi^2_{n-p-1}$ \par
+$\hat{\sigma}^2 = \text{SSE} / (n - p - 1) = \text{MSE} \rightarrow$ unbiased for $\sigma^2$
+
+\textbf{Statistical Inference} \par
+Let $c = \left[c_0, c_1, \dots, c_p\right]^T$, and we are interested in parameter 
+\[
+l = \sum_{j=0}^{p} c_j \beta_j = c^T \beta
+\]
+$\hat{l} = c^T \hat{\beta}$ is an unbiased estimator for $l$, where
+\[
+\frac{\hat{l} - l}{\text{se}(\hat{l})} \sim t_{n-p-1}
+\]
+\[
+\text{se}(\hat{l}) = \sqrt{\hat{\sigma}^2 c^T (X^TX)^{-1} c}
+\]
+and a 100(1 - $\alpha$)\% C.I. for $l$ is
+\[
+\hat{l} \pm \text{se}(\hat{l}) t_{\alpha/2, n-p-1}
+\]
+
+\subsection{Prediction}
+\textbf{Multiple Prediction} \par
+Prediction for $l = \sum_{j=1}^m a_j y^{(j)}$ for $a = \left[a_1, \dots, a_m \right]^T$ being a vector of $m$ known constants, where the future responses are $\left[y^{(1)}, \dots, y^{(m)}\right]^T$ \par
+The 100(1 - $\alpha$)\% C.I. for $l$ is
+\[
+\hat{l} \pm \text{se}(\hat{l} - l) t_{\alpha/2, n-p-1}
+\]
+where
+\[
+\text{se}(\hat{l} - l) = \hat{\sigma} \left\{a^T X_0 (X^T X)^{-1} X_0^T a + a^T a\right\}^{1/2}
+\]
+
+\textbf{Mean Response Prediction} \par
+The 100(1 - $\alpha$)\% C.I. prediction interval for the \textbf{mean} response corresponding to $x_0 = \left[1, x_{01}, \dots, x_{0p}\right]^T$ is
+\[
+x_0^T \hat{\beta} \pm t_{\alpha/2, n-p-1} \hat{\sigma} \left[x_0^T (X^TX)^{-1} x_0\right]^{1/2}
+\]
+
+\textbf{Individual Response Prediction} \par
+The 100(1 - $\alpha$)\% C.I. prediction interval for the \textbf{individual} response corresponding to $x_0 = \left[1, x_{01}, \dots, x_{0p}\right]^T$ is
+\[
+x_0^T \hat{\beta} \pm t_{\alpha/2, n-p-1} \hat{\sigma} \left[x_0^T (X^TX)^{-1} x_0 + 1\right]^{1/2}
+\]
+
+\subsection{Simultaneous Intervals}
+Suppose we want to construct simultaneous confidence intervals
+\[
+\left\{I(c): c \in \mathcal{C}\right\} 
+\]
+for the set of target parameters
+\[
+\left\{c^T\beta: c \in \mathcal{C}\right\} 
+\]
+of \textbf{family} confidence level $\geqslant$ 100(1 - $\alpha$) \par
+
+\textbf{Bonferroni's Method} - applicable to finite $\mathcal{C}$ \par
+Suppose $\mathcal{C}$ contains $g$ vectors. For $j = 1, \dots, g$,
+\begin{align*}
+I^B(c_j)    &= c_j^T \hat{\beta} \pm \text{se}(c_j^T \hat{\beta}) t_{\alpha/(2g), n-p-1} \\
+            &= c_j^T \hat{\beta} \pm \hat{\sigma} \left\{c_j^T (X^TX)^{-1} c_j\right\}^{1/2} t_{\alpha/(2g), n-p-1} \\
+\end{align*}
+
+\textbf{Scheffe's Method} - applicable to any $\mathcal{C}$ \par
+Let $\tilde{d}$ be the number of linearly independent vectors in $\mathcal{C}$. For $j = 1, \dots, g$,
+\begin{align*}
+I^S(c_j)    &= c_j^T \hat{\beta} \pm \text{se}(c_j^T \hat{\beta}) \sqrt{\tilde{d} F_{\alpha, \tilde{d}, n-p-1}} \\
+            &= c_j^T \hat{\beta} \pm \hat{\sigma} \left\{c_j^T (X^TX)^{-1} c_j\right\}^{1/2} \sqrt{\tilde{d} F_{\alpha, \tilde{d}, n-p-1}}
+\end{align*}
+
+\section{Analysis of Variance}
+\subsection{Sum of Squares}
+\[
+SSE = \sum_{i=1}^{n} (y_i - \hat{y_i})^2
+\]
+\[
+SST = \sum_{i=1}^{n} (y_i - \bar{y})^2 = S_{YY}
+\]
+\[
+SSR = \sum_{i=1}^{n} (\hat{y_i} - \bar{y})^2
+\]
+\[
+SSE + SSR = SST
+\]
+ANOVA table: \par
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source of Variation} & \text{SS} & \text{d.f.} & \text{MS} & \text{F-Ratio} \\
+    \hline
+    \text{Regression} & SSR & p & MSR = \frac{SSR}{p} & F = \frac{MSR}{MSE} \\
+    \text{Error} & SSE & n-p-1 & MSE = \frac{SSE}{n-p-1} & \\
+    \hline
+    \text{Total} & SST & n-1 & & \\
+    \hline\hline
+\end{array}
+\]
+
+\subsection{F Test}
+$H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0$ vs. $H_1$: not all $\beta_j$ equal to zero \par
+We reject $H_0$ iff $F > F_{\alpha, p, n-p-1}$ at the $100\alpha\%$ level of significance \par
+
+\subsection{Coefficient of Determination}
+\[
+R^2 = \frac{SSR}{SST} = 1 - \frac{SSE}{SST}
+\]
+Adjusted $R^2$:
+\[
+R_a^2 = 1 - \frac{SSE/(n-p-1)}{SST/(n-1)} = 1 - \frac{MSE}{MST}
+\]
+
+\subsection{Model Selection}
+Reduced model $\omega$: $Y = \beta_0 + \beta_1 X_1 + \dots + \beta_q X_q + \epsilon$ \par
+Full model $\Omega$: $Y = \beta_0 + \beta_1 X_1 + \dots + \beta_q X_q + \beta_{q+1} X_{q+1} + \dots + \beta_p X_p + \epsilon$ \par
+$H_0$: $\beta_{q+1} = \dots = \beta_p = 0$ vs. $H_1$: not all $\beta_j$ equal to zero \par
+
+\[
+SSEXT = SSE_{\omega} - SSE_{\Omega} = SSR_{\Omega} - SSR_{\omega}
+\]
+\[
+SST = SSE_{\omega} + SSR_{\omega} = SSE_{\Omega} + SSEXT + SSR_{\omega}
+\]
+
+ANOVA table: \par
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source of Variation} & \text{SS} & \text{d.f.} & \text{MS} & \text{F-Ratio} \\
+    \hline
+    \text{Regression fitting } \omega & SSR_{\omega} & q & & \\
+    \text{Extra} & SSEXT & p-q & MSR = \frac{SSEXT}{p-q} & F = \frac{MSR}{MSE} \\
+    \text{Error} & SSE_{\Omega} & n-p-1 & MSE_{\Omega} = \frac{SSE_{\Omega}}{n-p-1} & \\
+    \hline
+    \text{Total} & SST & n-1 & & \\
+\end{array}
+\]
+We reject $H_0$ iff $F > F_{\alpha, p-q, n-p-1}$ at the $100\alpha\%$ level of significance \par
+
+\subsection{General Linear Hypothesis}
+$H_0$: $C\beta = l_0$ vs. $H_1$: $C\beta \neq l_0$ \par
+where $C$ is of dimension $r \times (p+1)$ and $l_0$ is of dimension $r \times 1$ \par
+\[
+F = \frac{(C\hat{\beta} - l_0)^T \left[C(X^TX)^{-1} C^T\right]^{-1} (C\hat{\beta} - l_0)/r}{MSE_\Omega}
+\]
+We reject $H_0$ iff $F > F_{\alpha, r, n-p-1}$ at the $100\alpha\%$ significance level \par
+
+\section{Variable Selection, Polynomial and Interaction Regression}
+\subsection{Variable Selection}
+Consider the general regression model (full model with $k$ independent variables):
+\[
+Y = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + \epsilon
+\]
+
+\subsubsection{Best Subset Selection Method}
+\begin{enumerate}
+    \item \textbf{$R^2$} \par
+        $R^2$ increases as the number of independent variables increases, so the full model ($p=k$) will always be selected. \par
+    \item \textbf{Adjusted $R^2$} \par
+        \[
+        R_a^2 = 1 - \frac{MSE_p}{SST/(n-1)}
+        \]
+        where $MSE_p$ is the MSE of the model with $p(\leqslant k)$ independent variables. \par
+        We select the model with the largest $R_a^2$. \par
+
+    \item \textbf{Mallow's $C_p$} \par
+        \[
+        C_p = \frac{SSE_p}{MSE_k} - (n - 2p - 2)
+        \]
+        where $MSE_k$ is the MSE of the full model. \par
+        We select the model with the smallest $C_p$. \par
+
+    \item \textbf{AIC and BIC} \par
+        \[
+        AIC_p = n + n \ln(2\pi) + n \ln(SSE_p/n) + 2(p+2)
+        \]
+        \[
+        BIC_p = n + n \ln(2\pi) + n \ln(SSE_p/n) + \ln(n)(p+2)
+        \]
+        We select the model with the smallest AIC or BIC. \par
+
+\end{enumerate}
+\note{$R^2$ and $R_a^2$ are generally not good criteria for model selection.}
+
+\subsubsection{Sequential Methods}
+\begin{enumerate}
+    \item \textbf{Forward Selection} \par
+        Start with the null model (model with only the intercept term). At each step, add the independent variable that has the smallest p-value. Stop when all the remaining variables have p-values greater than $\alpha$.
+    
+    \item \textbf{Backward Elimination} \par
+        Start with the full model. At each step, remove the independent variable that has the largest p-value. Stop when all the remaining variables have p-values less than $\alpha$.
+
+    \item \textbf{Stepwise Selection} \par
+        Start with the null model. At each step, add the independent variable that has the smallest p-value. After adding a variable, check if any of the variables in the model have p-values greater than $\alpha$. If so, remove the variable with the largest p-value. Repeat this process until no more variables can be added or removed.
+
+\end{enumerate}
+
+\subsection{Polynomial Regression}
+The $p$-th order model with one independent variable is defined as:
+\[
+Y_i = \beta_0 + \beta_1 x_i + \beta_2 x_i^2 + \cdots + \beta_p x_i^p + \epsilon_i
+\]
+where $\epsilon_i \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)$ \par
+We would like to investigate whether the degree of polynomial can be reduced, to $q$. This can be done by testing:
+\[
+H_0: \beta_{q+1} = \cdots = \beta_p = 0 \text{ vs. } H_1: \beta \text{'s unrestricted}
+\]
+\note{Use techniques in Section 5.4}
+
+\subsection{Interaction Regression}
+Let $Y$ be the response variable and $X_1, \dots, X_p$ be explanatory variables. Under the MLR model,
+\[
+Y \sim N(\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_p X_p, \sigma^2)
+\]
+
+We may consider a more general model by adding \textbf{interaction terms} $\beta_{ij} X_i X_j$ for $i \neq j$:
+\[
+Y \sim N(\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p + \beta_{12} X_1 X_2 + \cdots + \beta_{p-1, p} X_{p-1} X_p, \sigma^2)
+\]
+
+To investigate whether the effects of $X_1, \dots, X_p$ are additive or interact with each other, we may consider testing:
+\[
+H_0: \beta_{ij} = 0 \text{ } \forall i \neq j \text{ vs. } H_1: \beta_{ij} \text{'s unrestricted}
+\]
+
+\section{Classification Models}
+\subsection{One-way Classification}
+\subsubsection{Introduction}
+No. of factors: 1     No. of levels: $k$ \par
+
+Data structure and assumptions
+\[
+\begin{array}{lcccc}
+    \hline
+    & \text{Group 1} & \text{Group 2} & \cdots & \text{Group k} \\
+    \hline
+    \text{random sample} & N(\theta_1, \sigma^2) & N(\theta_2, \sigma^2) & \cdots & N(\theta_k, \sigma^2) \\
+    & \downarrow & \downarrow & \cdots & \downarrow \\
+    & y_{11} & y_{21} & \cdots & y_{k1} \\
+    & y_{12} & y_{22} & \cdots & y_{k2} \\
+    & \vdots & \vdots & \vdots & \vdots \\
+    & y_{1n_1} & y_{2n_2} & \cdots & y_{kn_k} \\
+    \hline
+    \text{no. of obs.} & n_1 & n_2 & \cdots & n_k \\
+    \text{sample mean} & \bar{y}_1 & \bar{y}_2 & \cdots & \bar{y}_k \\
+    \hline
+\end{array}
+\]
+
+\subsubsection{Model}
+Cell-means model: $y_{ij} = \theta_i + \epsilon_{ij}$, $i = 1, \dots, k$, $j = 1, \dots, n_i$, $\epsilon_{ij} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)$ \par
+
+Factor-effects model: $y_{ij} = \mu + \tau_i + \epsilon_{ij}$, $i = 1, \dots, k$, $j = 1, \dots, n_i$, $\epsilon_{ij} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)$ \par
+A constraint on the $\tau_i$'s is taken:
+\[
+\sum_{i=1}^{k} n_i \tau_i = 0
+\]
+\note{The constraint above is not the only one we can take.} \par
+
+Conventional notations:
+\[
+\begin{array}{ccc}
+    \hline\hline
+    \textbf{Quantity} & \textbf{Notation} & \textbf{Definition} \\
+    \hline
+    \text{overall sample sum} & y_{..} & \sum_{i=1}^{k} \sum_{j=1}^{n_i} y_{ij} \\
+    i\text{-th sample sum} & y_{i.} & \sum_{j=1}^{n_i} y_{ij} \\
+    \text{overall sample mean} & \bar{y}_{..} & y_{..} / n \\
+    i\text{-th sample mean} & \bar{y}_{i.} & y_{i.} / n_i \\
+    \hline\hline
+\end{array}
+\]
+
+LS-estimator: \par
+\[
+\hat{\theta}_i = \bar{y}_i
+\]
+\[
+\hat{\mu} = \bar{y}_{..} \quad \hat{\tau}_i = \bar{y}_{i.} - \bar{y}_{..}
+\]
+
+\subsubsection{Test of Treatment Effects}
+Consider a one-way classification model \par
+\[
+H_0: \theta_1 = \cdots = \theta_k \text{ vs. } H_1: H_0 \text{ is not true.}
+\]
+\[
+\text{or } H_0: \tau_1 = \cdots = \tau_k = 0
+\]
+
+Quantities for testing:
+\[
+\begin{array}{r|c|l|l}
+    \hline
+    \text{Name} & \text{Notation} & \text{Formula} & \text{Convenient expression} \\
+    \hline
+    \text{Between-group S.S.} & SS_{tr} & \sum_{i=1}^{k} n_i (\bar{y}_{i.} - \bar{y}_{..})^2 & \sum_{i=1}^{k} \frac{y_{i.}^2}{n_i} - \frac{y_{..}^2}{n} \\
+    \text{Within-group S.S.} & SSE & \sum_{i=1}^{k} \sum_{j=1}^{n_i} (y_{ij} - \bar{y}_{i.})^2 & SST - SS_{tr}\\
+    \text{Total S.S.} & SST & \sum_{i=1}^{k} \sum_{j=1}^{n_i} (y_{ij} - \bar{y}_{..})^2 & \sum_{i=1}^{k} \sum_{j=1}^{n_i} y_{ij}^2 - \frac{y_{..}^2}{n} \\
+\end{array}
+\]
+
+ANOVA table: \par
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source of Variation} & \text{SS} & \text{d.f.} & \text{MS} & \text{F-Ratio} \\
+    \hline
+    \text{Between-group} & SS_{tr} & k-1 & MS_{tr} = \frac{SS_{tr}}{k-1} & F = \frac{MS_{tr}}{MSE} \\
+    \text{Within-group} & SSE & n-k & MSE = \frac{SSE}{n-k} & \\
+    \hline
+    \text{Total} & SST & n-1 & & \\
+    \hline\hline
+\end{array}
+\]
+We reject $H_0$ iff $F = \frac{MS_{tr}}{MSE} > F_{\alpha, k-1, n-k}$ at the $100\alpha\%$ level.
+
+\subsubsection{Estimation}
+Under the one-way model,
+\[
+\hat{\sigma}^2 = \frac{SSE}{n-k} = MSE
+\]
+
+Consider the general linear combination $L = \sum_{i=1}^{k} a_i \theta_i$, it can be estimated unbiasedly by:
+\[
+\hat{L} = \sum_{i=1}^{k} a_i \bar{y}_i
+\]
+
+Thus the standard error of $\hat{L}$ is
+\[
+\text{se}(\hat{L}) = \hat{\sigma} \sqrt{\sum_{i=1}^{k} \frac{a_i^2}{n_i}}
+\]
+
+A 100(1-$\alpha$)\% C.I. for $L$ is
+\[
+\hat{L} \pm \text{se}(\hat{L}) t_{\alpha/2, n-k}
+\]
+
+t test for testing whether $L = L_0$ at significance level $\alpha$:
+\[
+T = \left| \frac{\hat{L} - L_0}{\text{se}(\hat{L})} \right|
+\]
+reject the hypothesis iff $T > t_{\alpha/2, n-k}$ \par
+
+\subsection{Two-way Classification}
+\subsubsection{Introduction}
+Factors: $A$, $B$ \par
+No. of levels of $A$: $I$ \par
+No. of levels of $B$: $J$ \par
+Denote by $a^ib^j$ the treatment made up of the $i$th level of $A$ and the $j$th level of $B$. \par
+
+Observations:
+\[
+\begin{array}{ccccc}
+    \hline\hline
+    \text{Level of A $\backslash$ Level of B} & 1 & 2 & \cdots & J \\
+    \hline
+    1 & y_{111},\dots,y_{11r} & y_{121},\dots,y_{12r} & \cdots & y_{1J1},\dots,y_{1Jr} \\
+    2 & y_{211},\dots,y_{21r} & y_{221},\dots,y_{22r} & \cdots & y_{2J1},\dots,y_{2Jr} \\
+    \vdots & \vdots & \vdots & \vdots & \vdots \\
+    I & y_{I11},\dots,y_{I1r} & y_{I21},\dots,y_{I2r} & \cdots & y_{IJ1},\dots,y_{IJr} \\
+    \hline\hline
+\end{array}
+\]
+
+\subsubsection{Model}
+Cell-means model: $y_{ijk} = \theta_{ij} + \epsilon_{ijk}$, $i = 1, \dots, I$, $j = 1, \dots, J$, $k = 1, \dots, r$, 
+\[
+\epsilon_{ijk} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)
+\]
+
+In other words, the data set consists of $IJ$ random samples of \textbf{equal size $r$ (balanced design)}. \par
+
+Factor-effects model: $y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha \beta)_{ij} + \epsilon_{ijk}$ \par
+subject to constraints
+\[
+\sum_i \alpha_i = \sum_j \beta_j = 0, \sum_i (\alpha \beta)_{ij} = 0, \forall j, \sum_j (\alpha \beta)_{ij} = 0, \forall i
+\]
+If there are no interaction effects, then the model reduces to
+\[
+y_{ijk} = \mu + \alpha_i + \beta_j + \epsilon_{ijk}
+\]
+
+Conventional notations:
+\[
+\begin{array}{llll}
+    \hline\hline
+    \textbf{Notation} & \textbf{Definition} & \textbf{Notation} & \textbf{Definition} \\
+    \hline
+    y_{...} & \sum_{i=1}^{I} \sum_{j=1}^{J} \sum_{k=1}^{r} y_{ijk} & \bar{y}_{...} & y_{...}/(IJr) \\
+    y_{i..} & \sum_{j=1}^{J} \sum_{k=1}^{r} y_{ijk} & \bar{y}_{i..} & y_{i..}/(Jr) \\
+    y_{.j.} & \sum_{i=1}^{I} \sum_{k=1}^{r} y_{ijk} & \bar{y}_{.j.} & y_{.j.}/(Ir) \\
+    y_{ij.} & \sum_{k=1}^{r} y_{ijk} & \bar{y}_{ij.} & y_{ij.}/r \\
+    \hline\hline
+\end{array}
+\]
+
+LS-estimator: \par
+\[
+\hat{\theta}_{ij} = \bar{y}_{ij.}
+\]
+Thus, the error sum of squares is:
+\[
+SSE = \sum_{i=1}^{I} \sum_{j=1}^{J} \sum_{k=1}^{r} (y_{ijk} - \bar{y}_{ij.})^2
+\]
+
+Given
+\[
+\hat{\theta}_{ij} = \hat{\mu} + \hat{\alpha}_i + \hat{\beta}_j + \widehat{(\alpha \beta)}_{ij}
+\]
+and constraints imposed on the various effects, we have
+\[
+\begin{array}{ll}
+    \hline\hline
+    \textbf{Parameter} & \textbf{LS-Estimator} \\
+    \hline
+    \mu & \bar{y}_{...} \\
+    \alpha_i & \bar{y}_{i..} - \bar{y}_{...} \\
+    \beta_j & \bar{y}_{.j.} - \bar{y}_{...} \\
+    (\alpha \beta)_{ij} & \bar{y}_{ij.} - \bar{y}_{i..} - \bar{y}_{.j.} + \bar{y}_{...} \\
+    \hline\hline
+\end{array}
+\]
+
+\subsubsection{Two-way ANOVA}
+Based on the idea of partition of sum of squares, we have
+\[
+SST = SS_A + SS_{B|A} + SS_{AB|A,B} + SSE
+\]
+Owing to the balanced design (the size of each cell is $r$), it can be proved that 
+\[
+SS_{B|A} = SS_B, \quad SS_{AB|A,B} = SS_{AB}
+\]
+where
+\begin{enumerate}
+    \item $SS_A$: S.S. due to main effects of factor $A$;
+    \item $SS_B$: S.S. due to main effects of factor $B$;
+    \item $SS_{AB}$: S.S. due to interaction effects of factors $A$ and $B$;
+\end{enumerate}
+
+Useful quantities:
+\[
+\begin{array}{lll}
+    \hline\hline
+    \text{Notation} & \text{Formula} & \text{Convenient expression} \\
+    \hline
+    SS_A & \sum_{i=1}^{I} Jr (\bar{y}_{i..} - \bar{y}_{...})^2 & \sum_{i=1}^{I} y_{i..}^2 / Jr - y_{...}^2 / IJr \\
+    SS_B & \sum_{j=1}^{J} Ir (\bar{y}_{.j.} - \bar{y}_{...})^2 & \sum_{j=1}^{J} y_{.j.}^2 / Ir - y_{...}^2 / IJr \\
+    SS_{AB} & \sum_{i=1}^{I} \sum_{j=1}^{J} r (\bar{y}_{ij.} - \bar{y}_{i..} - \bar{y}_{.j.} + \bar{y}_{...})^2 & \sum_{i=1}^{I} \sum_{j=1}^{J} y_{ij.}^2 / r - y_{...}^2 / IJr - SS_A - SS_B \\
+    SSE & \sum_{i=1}^{I} \sum_{j=1}^{J} \sum_{k=1}^{r} (y_{ijk} - \bar{y}_{ij.})^2 & SST - SS_A - SS_B - SS_{AB} \\
+    SST & \sum_{i=1}^{I} \sum_{j=1}^{J} \sum_{k=1}^{r} (y_{ijk} - \bar{y}_{...})^2 & \sum_{i=1}^{I} \sum_{j=1}^{J} \sum_{k=1}^{r} y_{ijk}^2 - y_{...}^2 / IJr \\
+    \hline\hline
+\end{array}
+\]
+
+Two-way ANOVA table: \par
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source} & \text{S.S} & \text{d.f.} & \text{M.S.} & \text{F-Ratio} \\
+    \hline
+    \text{Main effect } A & SS_A & I-1 & MS_A = \frac{SS_A}{I-1} & F = \frac{MS_A}{MSE} \\
+    \text{Main effect } B & SS_B & J-1 & MS_B = \frac{SS_B}{J-1} & F = \frac{MS_B}{MSE} \\ 
+    \text{Interaction} & SS_{AB} & (I-1)(J-1) & MS_{AB} = \frac{SS_{AB}}{(I-1)(J-1)} & F = \frac{MS_{AB}}{MSE} \\
+    \text{Error} & SSE & IJ(r-1) & MSE = \frac{SSE}{IJ(r-1)} & \\
+    \hline
+    \text{Total} & SST & IJr - 1 & & \\
+    \hline\hline
+\end{array}
+\]
+
+First, test the relationship between the response and the 2 factors,
+\[
+H_0: \alpha_i = 0, \beta_j = 0, (\alpha \beta)_{ij} = 0, \forall i, j \text{ vs. } H_1: H_0 \text{ is not true}
+\]
+\[
+F_{tr} = MS_{tr} / MSE
+\]
+The above $H_0$ is rejected iff $P(F_{IJ-1, IJ(r-1)} > F_{tr})$ is smaller than $\alpha$. \par
+
+Second, test the interaction effect, (if the above null hypothesis is rejected)
+\[
+H_0: (\alpha \beta)_{ij} = 0, \forall i, j \text{ vs. } H_1: H_0 \text{ is not true}
+\]
+\[
+F_{AB} = MS_{AB} / MSE
+\]
+The above $H_0$ is rejected iff $P(F_{(I-1)(J-1), IJ(r-1)} > F_{AB})$ is smaller than $\alpha$. \par
+
+Third, test the main effects (if the first null hypothesis is rejected and the second null hypothesis is not rejected) \par
+\[
+H_0: \alpha_1 = \cdots = \alpha_I = 0 \text{ vs. } H_1: H_0 \text{ is not true}
+\]
+\[
+H_0: \beta_1 = \cdots = \beta_J = 0 \text{ vs. } H_1: H_0 \text{ is not true}
+\]
+
+\note{If there is strong evidence for the existence of interactions, studying the main effects may not be meaningful.}
+
+\subsubsection{Estimation}
+If there are significant interactions, we usually proceed to study in detail the effects of one factor while keeping the other at a fixed level. \par
+Consider a linear combination of the treatment means
+\[
+L = \sum_{i=1}^I \sum_{j=1}^J a_{ij} \theta_{ij}
+\]
+for some known constants $a_{ij}$'s. An unbiased estimator for $L$ is
+\[
+\hat{L} = \sum_{i=1}^I \sum_{j=1}^J a_{ij} \bar{y}_{ij.}
+\]
+Under two-way model, $SSE \sim \sigma^2 \chi^2_{IJ(r-1)}$, thus
+\[
+\hat{\sigma}^2 = \frac{SSE}{IJ(r-1)} = MSE  
+\]
+and the standard error of $\hat{L}$ is
+\[
+\text{se}(\hat{L}) = \hat{\sigma} \sqrt{\sum_{i=1}^I \sum_{j=1}^J a_{ij}^2 / r}
+\]
+a 100(1-$\alpha$)\% C.I. for $L$ is
+\[
+\hat{L} \pm \text{se}(\hat{L}) t_{\alpha/2, IJ(r-1)}
+\]
+test whether $L = L_0$ at significance level $\alpha$:
+\[
+T = \frac{\left|\hat{L} - L_0\right|}{\text{se}(\hat{L})}
+\]
+reject the null hypothesis iff $T > t_{\alpha/2, IJ(r-1)}$ \par
+
+\section{General Linear Model}
+The situations not covered in previous sections:
+\begin{enumerate}
+    \item There exists a mixture of quantitative and qualitative independent variables;
+    \item A two-way classification model has unequal sample sizes in treatment groups (unbalanced design);
+\end{enumerate}
+
+In general, one can always rewrite a linear model (linear regression model, classification model or a mixture of them) to the general form:
+\[
+Y = X \beta + \epsilon
+\]
+
+\subsection{Quantitative Representation of Categorical Variables}
+Any categorical variable with $k$ levels can be represented by $k-1$ dummy variables $I_1, \dots, I_{k-1}$, known as dummy variables which are defined as:
+\[
+\begin{array}{l|ccccc}
+    \text{Level of categorical variable} & I_1 & I_2 & I_3 & \cdots & I_{k-1} \\
+    \hline
+    1 & 1 & 0 & 0 & \cdots & 0 \\
+    2 & 0 & 1 & 0 & \cdots & 0 \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
+    k-1 & 0 & 0 & 0 & \cdots & 1 \\
+    k & 0 & 0 & 0 & \cdots & 0 \\
+\end{array}
+\]
+\note{This is called one-hot encoding in ML.}
+
+\subsection{Representation of One-way Classification}
+Factor of $k$ levels: dummy variables $I_1, \dots, I_{k-1}$ \par
+Number of observations: $n$ \par
+Model:
+\[
+Y = \mu + \tau_1 V_1 + \cdots + \tau_{k-1} V_{k-1} + \epsilon
+\]
+The model can be rewritten as:
+\[
+Y = X \beta + \epsilon
+\]
+where
+\[
+\beta = 
+\begin{bmatrix}
+\mu \\
+\tau_1 \\
+\vdots \\
+\tau_{k-1}
+\end{bmatrix}
+\]
+
+\subsection{Representation of Two-way classification}
+\begin{tabular}{ll}
+    \textbf{Effects} & \textbf{Representation} \\
+    \hline
+    Factor $A$ of $I$ levels & dummy variables $A_1, \dots, A_{I-1}$ \\
+    Factor $B$ of $J$ levels & dummy variables $B_1, \dots, B_{J-1}$ \\
+    Interaction between $A$ and $B$ & $A_1 B_1, A_1 B_2, \dots, A_{I-1} B_{J-1}$ \\
+\end{tabular}
+
+The \textbf{full model} is given by
+\begin{align*}
+\Omega: \quad Y &= \mu + \alpha_1 A_1 + \cdots + \alpha_{I-1} A_{I-1} + \beta_1 B_1 + \cdots + \beta_{J-1} B_{J-1} \\
+&\quad + (\alpha \beta)_{11} A_1 B_1 + \cdots + (\alpha \beta)_{(I-1)(J-1)} A_{I-1} B_{J-1} + \epsilon
+\end{align*}
+
+\textbf{Test for interaction}:
+Reduced model:
+\[
+\omega: \quad Y = \mu + \alpha_1 A_1 + \cdots + \alpha_{I-1} A_{I-1} + \beta_1 B_1 + \cdots + \beta_{J-1} B_{J-1} + \epsilon
+\]
+
+\section{Extraneous Variation}
+\subsection{Introduction}
+Studies of classification models sometimes encounter an extraneous source of variation, which may affect the responses or mask the true treatment effects. \par
+
+\subsection{Randomized Block Design}
+Suppose that within the $j$th block, the $i$th treatment is applied to $n_{ij}$ units, for $i = 1, \dots, t$ and $j = 1, \dots, b$. \par
+Model:
+\[
+y_{ijk} = \mu + \tau_i + \gamma_j + \epsilon_{ijk}, i = 1, \dots, t, j = 1, \dots, b, k = 1, \dots, n_{ij}, \epsilon_{ijk} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)
+\]
+
+Alternatively, we may formulate the model as multiple linear regression on dummy variables $A_1, \dots, A_{t-1}$ and $C_1, \dots, C_{b-1}$:
+\[
+Y = \mu + \tau_1 A_1 + \cdots + \tau_{t-1} A_{t-1} + \gamma_1 C_1 + \cdots + \gamma_{b-1} C_{b-1} + \epsilon
+\]
+
+Least square estimators of $\mu, \tau_i, \gamma_j$:
+\[
+\left[\hat{\mu}, \hat{\tau}_1, \dots, \hat{\tau}_{t-1}, \hat{\gamma}_1, \dots, \hat{\gamma}_{b-1}\right]^T = (X^TX)^{-1} X^T Y
+\]
+
+\textbf{ANOVA}:
+\[
+\text{(reduced model $\omega$)}\ H_0: \tau_i = 0\ \forall i
+\quad \text{vs.} \quad
+\text{(full model $\Omega$)}\ H_1: \text{no restrictions}
+\]
+
+\[
+\begin{array}{l|cc}
+    \text{Model} & \Omega & \omega \\
+    \hline
+    \text{S.S.} & SSE_{\Omega} = \sum_{i,j,k} (y_{ijk} - \hat{y}_{ijk})^2 & SSE_{\omega} = \sum_{i,j,k} (y_{ijk} - \hat{y}_{ijk})^2 \\
+\end{array}
+\]
+
+ANOVA table: \par
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source} & \text{S.S.} & \text{d.f.} & \text{M.S.} & \text{F-Ratio} \\
+    \hline
+    \text{Between blocks} & SST - SSE_{\omega} & b-1 & & \\
+    \text{Between treatments} & SS_{tr} & t-1 & MS_{tr} = \frac{SS_{tr}}{t-1} & F = \frac{MS_{tr}}{MSE_{\Omega}} \\
+    \text{Error} & SSE_{\Omega} & (t-1)(b-1) & MSE_{\Omega} = \frac{SSE_{\Omega}}{(t-1)(b-1)} & \\
+    \hline
+    \text{Total} & SST & n-1 & & \\
+    \hline\hline
+\end{array}
+\]
+
+reject $H_0$ iff $F > F_{\alpha, t-1, (t-1)(b-1)}$ at the $100\alpha\%$ level of significance \par
+
+\textbf{Randomized block design with two factors}: \par
+If the treatments of interest are derived from two factors $A$ and $B$, of $I$ and $J$ levels respectively, the randomized block design has the model formula:
+\[
+y_{ijkl} = \mu + \alpha_i + \beta_j + (\alpha \beta)_{ij} + \gamma_k + \epsilon_{ijkl}
+\]
+\[
+i = 1, \dots, I, j = 1, \dots, J, k = 1, \dots, b, l = 1, \dots, n_{ijk}, \epsilon_{ijkl} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)
+\]
+
+The usual procedures for ANOVA tests and analysis of treatment means can be extended to
+the above model.
+
+\subsection{Analysis of Covariance (ANCOVA)}
+\textbf{One-way ANCOVA} \par
+An ANCOVA model with 1 factor of $k$ levels and $p$ concomitant variables $X_1, \dots, X_p$ may be expressed as
+\[
+y_{ij} = \mu + \tau_i + \gamma_1 x_{ij,1} + \cdots + \gamma_p x_{ij,p} + \epsilon_{ij}
+\]
+\[
+\epsilon_{ij} \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2), i = 1, \dots, k, j = 1, \dots, n_i
+\]
+
+Alternatively, we may formulate the model as multiple linear regression on dummy variables $D_1, \dots, D_{k-1}$ and concomitant variables $X_1, \dots, X_p$
+\[
+Y = \mu + \tau_1 D_1 + \cdots + \tau_{k-1} D_{k-1} + \gamma_1 X_1 + \cdots + \gamma_p X_p + \epsilon
+\]
+
+Least square estimators of $\mu, \tau_i, \gamma_j$:
+\[
+\left[\hat{\mu}, \hat{\tau}_1, \dots, \hat{\tau}_{k-1}, \hat{\gamma}_1, \dots, \hat{\gamma}_p\right]^T = (X^TX)^{-1} X^T Y
+\]
+
+Test for treatment effects:
+\begin{itemize}
+    \item Full model $\Omega$: regressing $Y$ on all variables \par
+        $\rightarrow$ error SS $SSE_{\Omega}$
+    
+    \item Reduced model $\omega$: regressing $Y$ on concomitant variables $X_1, \dots, X_p$ only \par
+        $\rightarrow$ error SS $SSE_{\omega}$
+
+\end{itemize}
+
+\[
+H_0: \tau_1 = \cdots = \tau_{k-1} = 0 \text{ vs. } H_1: H_0 \text{ is not true}
+\]
+Setting $SS_{tr} = SSE_{\omega} - SSE_{\Omega}$ and $SSR_{\omega} = SST - SSE_{\Omega}$, we have the following ANOVA table:
+\[
+\begin{array}{lcccc}
+    \hline\hline
+    \text{Source} & \text{S.S.} & \text{d.f.} & \text{M.S.} & \text{F-Ratio} \\
+    \hline
+    \text{Regression fitting $\omega$} & SSR_{\omega} & p & & \\
+    \text{Extra} & SS_{tr} & k-1 & MS_{tr} = \frac{SS_{tr}}{k-1} & F = \frac{MS_{tr}}{MSE_{\Omega}} \\
+    \text{Error} & SSE_{\Omega} & n-p-k & MSE_{\Omega} = \frac{SSE_{\Omega}}{n-p-k} & \\
+    \hline
+    \text{Total} & SST & n-1 & & \\
+    \hline\hline
+\end{array}
+\]
+reject $H_0$ iff $F > F_{\alpha, k-1, n-p-k}$ at the $100\alpha\%$ level of significance \par
+
+\textbf{Two-way ANCOVA} \par
+For two factors ($A$ of $I$ levels and $B$ of $J$ levels), $n_{ij}$ observations for treatment $a^i b^j$ and $p$ concomitant variables, we have
+\[
+y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha \beta)_{ij} + \gamma_1 x_{ijk,1} + \cdots + \gamma_p x_{ijk,p} + \epsilon_{ijk}
+\]
+
+The usual procedures for testing and analysis of treatment means can be extended to the above model.
+
+\section{Model Diagnostic Checking}
+\note{This section is not included in the final exam.}
+\subsection{Checking Model Assumptions}
+The multiple linear regression is given by:
+\[
+y_i = \beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip} + \epsilon_i, \epsilon_i \overset{\text{i.i.d.}}{\sim} N(0, \sigma^2)
+\]
+
+with the following assumptions:
+\begin{enumerate}
+    \item [(A1)] Linearity in $X$'s
+    \item [(A2)] Constant variance
+    \item [(A3)] Independence
+    \item [(A4)] Normality
+\end{enumerate}
+
+\begin{itemize}
+    \item If A1 is violated, the proposed model is underfitted and $\hat{\beta}$ will generally be biased.
+    \item If A2 is violated, $\hat{\beta}$ is still unbiased but no longer optimal (i.e. not BLUE).
+    \item If A3 is violated, $\hat{\beta}$ is still unbiased but no longer optimal (i.e. not BLUE).
+    \item If A4 is violated, $\hat{\beta}$ is still BLUE. But A4 is necessary condition for valid statistical inference like tests of hypotheses and confidence intervals.
+\end{itemize}
+
+\subsection{Identifying Unusual Observations}
+\subsubsection{\texorpdfstring{Outliers with Respect to $y$ Values}{Outliers with Respect to y Values}}
+Define \textbf{studentized residuals} $r_{(i)}$ by
+\[
+r_{(i)} = \frac{d_i}{\text{se}(d_i)} = \frac{\hat{\epsilon}_i}{\sqrt{MSE_{(i)}(1 - h_{ii})}}
+\]
+
+\begin{itemize}
+    \item the $i$-th observation is not an outlier if $|r_{(i)}| \leq 2$;
+    \item the $i$-th observation is a possible outlier if $2 < |r_{(i)}| \leq 3$;
+    \item the $i$-th observation is an outlier if $|r_{(i)}| > 3$.
+\end{itemize}
+
+\subsubsection{\texorpdfstring{Outliers with Respect to $X$ Values}{Outliers with Respect to X Values}}
+Define \textbf{leverage} $h_{ii}$ by
+\[
+h_{ii} = x_i^T (X^TX)^{-1} x_i
+\]
+
+If $h_{ii}$ is large, the $i$-th observation is outlying with respect to its $x$ values. \par
+Since $\sum_{i=1}^{n} h_{ii} = \tr(H) = p+1$, we have the following guideline: \par
+The $i$-th observation is outlying w.r.t. its $x$ values if
+\[
+h_{ii} > \frac{2(p+1)}{n} \text{ or } h_{ii} > \frac{3(p+1)}{n}
+\]
+
+\subsubsection{Influential Observations}
+Define \textbf{Cook's distance} $D_i$ by the distance between $\hat{\beta}$ and $\hat{\beta}_{(i)}$ after `standardization':
+\[
+D_i = \frac{(\hat{\beta} - \hat{\beta}_{(i)})^T X^TX (\hat{\beta} - \hat{\beta}_{(i)})}{(p+1) MSE} = \frac{\hat{\epsilon}_i^2 h_{ii}}{(p+1) MSE (1 - h_{ii})^2}
+\]
+
+Practical experience suggests that:
+\begin{itemize}
+    \item the $i$-th observation is not influential if $D_i < F_{0.8, p+1, n-p-1}$;
+    \item the $i$-th observation is possibly influential if $F_{0.8, p+1, n-p-1} \leq D_i < F_{0.5, p+1, n-p-1}$;
+    \item the $i$-th observation is influential if $D_i \geq F_{0.5, p+1, n-p-1}$.
+\end{itemize}
+
+\subsection{Detection of Multicollinearity}
+If there exists constants $c_0, c_1, \cdots, c_p$, not all zero, such that
+\[
+c_0 + c_1 X_1 + \cdots + c_p X_p \approx 0
+\]
+we say that \textbf{collinearity} or \textbf{multicollinearity} exists. \par
+\textbf{Detection}
+Define \textbf{tolerance} $TOL_j$ by $TOL_j = 1 - R_j^2, j = 1, \dots, p$, where $R_j^2$ is the sample coefficient of determination $R^2$ of $X_j$ on the remaining independent variables. \par
+Consider the measure of variance inflation factor, $VIF_j$, defined as
+\[
+VIF_j = \frac{1}{TOL_j} = \frac{1}{1 - R_j^2}, j = 1, \dots, p
+\]
+
+\begin{itemize}
+    \item If there is a near-singularity involving $X_j$, and the other independent variables, $R_j^2$  will be near 1 and $VIF_j$ will be large.
+    \item If $X_j$ is orthogonal to the other independent variables, $R_j^2$ will be 0 and $VIF_j$ will be 1.
+\end{itemize}
+
+It has been suggested that if $VIF_j > 10$, there is serious multicollinearity.
+\end{document}
