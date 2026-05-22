@@ -22,6 +22,7 @@
 \RequirePackage{booktabs}
 \RequirePackage{array}
 \RequirePackage{titlesec}
+\RequirePackage{needspace}
 \RequirePackage{fancyhdr}
 \RequirePackage{hyperref}
 
@@ -73,6 +74,10 @@
 \setlist{itemsep=0.2em,topsep=0.35em,leftmargin=2.2em}
 
 % ===== Section styling =====
+\newcommand{\sectionbreak}{\Needspace{4\baselineskip}}
+\newcommand{\subsectionbreak}{\Needspace{3\baselineskip}}
+\newcommand{\subsubsectionbreak}{\Needspace{2.5\baselineskip}}
+
 \titleformat{\section}
     {\Large\bfseries\color{notebookprimary}}
     {\thesection}{0.75em}{}
