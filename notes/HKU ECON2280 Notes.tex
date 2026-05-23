@@ -1,0 +1,769 @@
+\documentclass[11pt,a4paper]{article}
+
+% ===== Document metadata =====
+\newcommand{\coursecode}{ECON2280}
+\newcommand{\coursetitle}{Introductory Econometrics}
+\newcommand{\notetitle}{Lecture Notes}
+\newcommand{\notedate}{Last update: Mar 23, 2026 (up to LN6)}
+
+\usepackage{../styles/notebook}
+
+\begin{document}
+\makenotestitle
+
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+Types of economic data:
+\begin{itemize}
+    \item Cross-sectional data: Data of individuals or other units of interest at \textbf{a given point of time} or in a given period.
+    \item Time-series data:  Data of a variable or several variables over \textbf{a period of time}.
+    \item Pooled cross sections: Two or more cross sections of data combined in one set.
+    \item Panel data: The same cross-sectional units followed over time. 
+\end{itemize}
+
+\section{Estimation}
+\subsection{Simple Regression Model}
+Model:
+\[
+y = \beta_0 + \beta_1 x + u
+\]
+\begin{itemize}
+    \item $y$: dependent variable
+    \item $x$: independent variable
+    \item $u$: error term
+    \item $\beta_0$ and $\beta_1$: parameters of the model
+\end{itemize}
+
+\textbf{Parameters} are fixed but unknown numbers. \par
+\textbf{Variables} are \textbf{observed} numbers in the model. \par
+\textbf{Errors} are \textbf{unobserved} random numbers in the model.
+
+\subsection{Multiple Regression Model}
+Model:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k + u
+\]
+
+\subsection{OLS Estimator}
+Fitted value:
+\[
+\hat{y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_{i}
+\]
+Residual:
+\[
+\hat{u}_i = y_i - \hat{y}_i = y_i - \hat{\beta}_0 - \hat{\beta}_1 x_{i}
+\]
+
+\[
+\begin{cases}
+    \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} \\
+    \hat{\beta}_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2} = \frac{\widehat{Cov}(x,y)}{\widehat{Var}(x)}
+\end{cases}
+\]
+
+Correlation coefficient between $x$ and $y$:
+\[
+\rho_{xy} = \frac{Cov(x,y)}{\sigma_x \sigma_y}
+\]
+Thus, 
+\[
+\hat{\beta}_1 = \hat{\rho}_{xy} \cdot \frac{\hat{\sigma}_y}{\hat{\sigma}_x}
+\]
+
+Matrix form of OLS estimator:
+\[
+\hat{\beta} = (X^T X)^{-1} X^T Y
+\]
+
+\section{Interpretation}
+\subsection{Interpretation of Simple OLS}
+\textbf{Assumptions about $u$}: $E(u|x) = E(u) = 0$
+
+Real parameter $\beta_1$:
+\[
+\beta_1 = \frac{\Delta y}{\Delta x} \text{ if } \frac{\Delta u}{\Delta x} = 0
+\]
+$\Rightarrow$ Other factors being equal, one unit increase in $x$ is associated with $\beta_1$ unit increase in $y$. \par
+
+Estimated parameter $\hat{\beta}_1$:
+$\Rightarrow$ Other factors being equal, one unit increase in $x$ is associated with a predicted $\hat{\beta}_1$ unit increase in $y$. \par
+
+Estimated parameter $\hat{\beta}_0$:
+$\Rightarrow$ Other factors being equal, the predicted value of $y$ when $x=0$ is $\hat{\beta}_0$. \par
+
+\subsection{Interpretation of Multiple OLS}
+(Similar to interpretation of simple OLS.)
+
+\subsection{The ``Partial Out'' Interpretation}
+Consider the two-variable model:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + u
+\]
+The estimated $\hat{\beta}_1$ from the model can be obtained in two steps:
+\begin{itemize}
+    \item Regress $x_1$ on $x_2$ and collect the residual $\hat{\gamma}$:
+        \[
+        x_1 = \hat{\delta}_0 + \hat{\delta}_1 x_2 + \hat{\delta}
+        \]
+    
+    \item Regress $y$ on $\hat{\gamma}$
+        \[
+        y = \alpha + \hat{\beta} \hat{\gamma} + u
+        \]
+
+\end{itemize}
+Intuition: $\hat{\beta}_1$ is the effect of $x_1$ on $y$ after removing the effect on $x_2$ in the model. \par
+
+\subsection{Units and Functional Form}
+\begin{tabular}{lccc}
+    \hline\hline
+    Model & Dependent variable & Independent variable & Interpretation \\
+    \hline
+    Level-level & $y$ & $x$ & $\Delta y = \beta_1 \Delta x$ \\
+    Level-log & $y$ & $\log (x)$ & $\Delta y = (\beta_1 / 100) \% \Delta x$  \\
+    Log-level & $\log (y)$ & $x$ & $\% \Delta y = (100 \beta_1) \Delta x$ \\
+    Log-log & $\log (y)$ & $\log (x)$ & $\% \Delta y = \beta_1 \% \Delta x$ \\
+    \hline\hline
+\end{tabular}
+
+\begin{itemize}
+    \item \textbf{Level-log}: one \textbf{percent} change in $x$ is associated with a $\beta_1 / 100$ unit change in $y$.
+    \item \textbf{Log-level}: one unit change in $x$ is associated with a $100 \beta_1$ \textbf{percent} change in $y$.
+    \item \textbf{Log-log}: one \textbf{percent} change in $x$ is associated with a $\beta_1$ \textbf{percent} change in $y$.
+\end{itemize}
+
+\section{Goodness of Fit}
+\subsection{Simple Regression Case}
+Properties of simple linear regression:
+\begin{itemize}
+    \item 1. Residuals are mean zero: $\sum_{i=1}^n \hat{u}_i = 0$
+    \item 2. Residuals are uncorrelated with $x$: $\sum_{i=1}^n x_i \hat{u}_i = 0$
+    \item 3. Sample mean on the regression line: $\bar{y} = \hat{\beta}_0 + \hat{\beta}_1 \bar{x}$
+\end{itemize}
+
+Total Sum of Squares (TSS):
+\[
+TSS = \sum_{i=1}^n (y_i - \bar{y})^2
+\]
+Explained Sum of Squares (ESS):
+\[
+ESS = \sum_{i=1}^n (\hat{y}_i - \bar{y})^2
+\]
+Residual Sum of Squares (RSS):
+\[
+RSS = \sum_{i=1}^n (y_i - \hat{y}_i)^2
+\]
+Goodness of fit:
+\[
+R^2 = \frac{ESS}{TSS} = 1 - \frac{RSS}{TSS}
+\]
+
+\subsection{Multiple Regression Case}
+$R^2$ increases with the number of independent variables.
+Adjusted $R^2$:
+\[
+\bar{R}^2 = 1 - \frac{n-1}{n-k-1} \cdot \frac{RSS}{TSS} = 1 - \frac{n-1}{n-k-1} (1 - R^2)
+\]
+
+\begin{itemize}
+    \item $\bar{R}^2$ increases only if the additional independent variable has a significant contribution to the model.
+    \item $\bar{R}^2$ can be negative.
+\end{itemize}
+
+\subsection{Regression Through the Origin}
+Model:
+\[
+y = \beta_1 x + u
+\]
+Fitted values:
+\[
+\tilde{y} = \tilde{\beta}_1 x
+\]
+Residuals:
+\[
+\tilde{u} = y - \tilde{y} = y - \tilde{\beta}_1 x
+\]
+Estimation:
+\[
+\tilde{\beta}_1 = \frac{\sum_{i=1}^n x_i y_i}{\sum_{i=1}^n x_i^2}
+\]
+
+OLS properties above: 1 and 3 do not hold. \par
+$TSS = ESS + RSS$ does not hold, and $R^2$ can be negative.
+
+\section{Unbiasedness}
+\subsection{Unbiasedness of Simple OLS}
+We say $\hat{\beta}$ is an \textbf{unbiased} estimator of $\beta$ if $E(\hat{\beta}) = \beta$. \par
+Assumptions needed for unbiasedness:
+\begin{itemize}
+    \item SLR.1: Linear in parameters: $y = \beta_0 + \beta_1 x + u$
+    \item SLR.2: Random sampling
+    \item SLR.3: Sample variation in $x$: $Var(x) > 0$
+    \item SLR.4: Zero conditional mean: $E(u|x) = 0$ 
+\end{itemize}
+
+\subsection{Unbiasedness of Multiple OLS}
+Assumptions needed for unbiasedness:
+\begin{itemize}
+    \item MLR.1: Linear in parameters
+    \item MLR.2: Random sampling
+    \item MLR.3: No perfect collinearity (e.g. $x_3 = 2 x_1 + 3 x_2$ breaks this assumption)
+    \item MLR.4: Zero conditional mean: $E(u|x_1, x_2, \cdots, x_k) = 0$
+\end{itemize}
+
+\subsection{Model Specification and Biases}
+Inclusion of irrelevant variables $\rightarrow$ unbiasedness still holds \par
+Exclusion of relevant variables $\rightarrow$ biased \par
+Suppose the true model is:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + u
+\]
+Bias of $\hat{\beta}_1$ when omitting $x_2$:
+\[
+Bias(\tilde{\beta}_1) = E(\tilde{\beta}_1) - \beta_1 = \beta_2 \tilde{\delta}_1
+\]
+where $\tilde{\delta}_1$ is the slope coefficient from regressing $x_1$ on $x_2$. \par
+\[
+x_2 = \tilde{\delta}_0 + \tilde{\delta}_1 x_1 + \tilde{v}
+\]
+
+Direction of Bias:
+\begin{itemize}
+    \item We say $\tilde{\beta}_1$ has an \textbf{upward} bias if $E(\tilde{\beta}_1) > \beta_1$.
+    \item We say $\tilde{\beta}_1$ has a \textbf{downward} bias if $E(\tilde{\beta}_1) < \beta_1$.
+    \item We say $\tilde{\beta}_1$ is \textbf{biased toward zero} if $|E(\tilde{\beta}_1)| < |\beta_1|$.
+\end{itemize}
+
+\section{Precision}
+\subsection{Variance of OLS Estimator}
+Under SLR.1-4, OLS estimators are unbiased. \par
+\[
+E(\hat{\beta}_0) = \beta_0, \quad E(\hat{\beta}_1) = \beta_1
+\]
+Assumption SLR.5: Homoskedasticity \par
+The error term $u$ has the same variance given any value of the explanatory variable
+\[
+Var(u|x) = \sigma^2
+\]
+Under assumptions SLR.1-5, the variance of $\hat{\beta}_1$ is:
+\[
+Var(\hat{\beta}_1) = \frac{\sigma^2}{TSS_x}
+\]
+
+Similarly, in multiple regression, under assumptions MLR.1-5, the variance of $\hat{\beta}_j$ is:
+\[
+Var(\hat{\beta}_j) = \frac{\sigma^2}{TSS_j (1 - R_j^2)}
+\]
+
+Multicollinearity:
+Define $VIF_j = \frac{1}{1 - R_j^2}$ as the \textbf{variance inflation factor} of $\hat{\beta}_j$. \par
+We often consider $VIF_j > 10$  $(R_j^2 > 0.9)$ as a sign of severe multicollinearity.
+
+\subsection{Estimating the Error Variance}
+An unbiased estimator of $\sigma^2$ is:
+\[
+\hat{\sigma}^2 = \frac{1}{n-k-1} \sum_{i=1}^n \hat{u}_i^2 = \frac{RSS}{n-k-1}
+\]
+Standard error of $\hat{\beta}_j$:
+\[
+\text{se}(\hat{\beta}_j) = \sqrt{\widehat{Var}(\hat{\beta}_j)}
+\]
+
+\subsection{The Gauss-Markov Theorem}
+Under assumptions MLR.1-5, the OLS estimator $\hat{\beta}$ are the \textbf{b}est \textbf{l}inear \textbf{u}nbiased \textbf{e}stimator (BLUE) of $\beta$. \par
+
+\section{Inference}
+\subsection{Sampling Distribution of OLS Estimator}
+Under assumptions MLR.1-5, 
+\[
+Var(\hat{\beta}_j) = \frac{\sigma^2}{TSS_j (1 - R_j^2)}
+\]
+
+\note{$R_j^2$ is the $R^2$ from regressing $x_j$ on all other independent variables. It measures how much of the variation in $x_j$ can be explained by other independent variables. \par
+A larger $R_j^2$ means a strong collinearity and a larger variance of $\hat{\beta}_j$.
+}
+
+Assumption MLR.6: Normality \par
+The population error $u$ is independent of the explanatory variables \\$(x_1, \cdots, x_k)$ and is normally distributed with mean zero and variance $\sigma^2$:
+\[
+u \sim N(0, \sigma^2)
+\]
+Assumptions MLR.1-6 together are called the \textbf{classical linear model (CLM) assumptions}. \par
+The CLM assumptions can be summarized as:
+\[
+y | x \sim N(\beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k, \sigma^2) i.i.d.
+\]
+
+The standardized estimator:
+\[
+t_{\hat{\beta}_j} = \frac{\hat{\beta}_j - \beta_j}{\text{se}(\hat{\beta}_j)} \sim t_{n-k-1}
+\]
+
+\subsection{Hypothesis Testing of a Single Estimator}
+\begin{itemize}
+    \item One-sided test (right-tailed): reject most extreme values of $\hat{\beta}_j$ that are too large ($H_0: \beta_j \leqslant 0$ v.s. $H_1: \beta_j > 0$)
+    \item One-sided test (left-tailed): reject most extreme values of $\hat{\beta}_j$ that are too small ($H_0: \beta_j \geqslant 0$ v.s. $H_1: \beta_j < 0$)
+    \item Two-sided test: reject most extreme values of $\hat{\beta}_j$ that are either too large or too small ($H_0: \beta_j = 0$ v.s. $H_1: \beta_j \neq 0$)
+\end{itemize}
+
+The \textbf{p-value} is the probability of observing a value that is more extreme than $\hat{\beta}_j$ under the null hypothesis. \par
+\[
+p = Pr(|T| > |t|)
+\]
+\note{Not rejecting $\neq$ accepting $H_0$.} \par
+\note{If a regression coefficient is different from zero in a two-sided test, the corresponding variable is said to be \textbf{statistically significant} (e.g. $|t_{\hat{\beta}_j}| > 1.96 \rightarrow$ statistically significant at 5\% level).}
+
+\subsection{Confidence Intervals}
+For two-sided tests, a $100(1-\alpha)\%$ confidence interval for $\beta_j$ is:
+\[
+\hat{\beta}_j \pm t_{\alpha/2, n-k-1} \cdot \text{se}(\hat{\beta}_j)
+\]
+
+\subsection{Hypothesis Testing of Linear Combinations of Parameters}
+Consider the case:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + u
+\]
+We want to test $H_0: \beta_1 - \beta_2 = 0$ v.s. $H_1: \beta_1 - \beta_2 \neq 0$. \par
+Define $\theta = \beta_1 - \beta_2$, so that $\beta_1 = \theta + \beta_2$. \par
+So the model can be rewritten as:
+\[
+y = \beta_0 + \theta x_1 + \beta_2 (x_1 + x_2) + u
+\]
+Then we can estimate the modified model and test $H_0: \theta = 0$.
+
+\subsection{Hypothesis Testing of Multiple Linear Restrictions}
+Consider the \textbf{unrestricted model}:
+\[
+y = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + u
+\]
+and the \textbf{restricted model}:
+\[
+y = \beta_0 + \beta_1 x_1 + \cdots + \beta_{k-q} x_{k-q} + u
+\]
+with hypotheses:
+\[
+H_0: \beta_{k-q+1} = \cdots = \beta_k = 0 
+\]
+The F-statistic is:
+\[
+F = \frac{(RSS_r - RSS_{ur}) / q}{RSS_{ur} / (n-k-1)} \sim F_{q, n-k-1}
+\]
+
+\section{Functional Forms}
+\subsection{Data Scaling}
+Change of units of measurement will change the numerical values of the regression coefficients, e.g.
+\[
+y \times c \rightarrow \beta \times c \quad
+x \times c \rightarrow \beta \div c
+\]
+but t-statistics, statistical significance, and $R^2$ remain unchanged. \par
+
+Standardization of variables:
+\[
+z = \frac{x - \bar{x}}{\sigma_x}
+\]
+\[
+\hat{b}_j = \frac{\sigma_x}{\sigma_y} \cdot \hat{\beta}_j
+\]
+This allows us to compare the effect of variables with different units.
+
+\subsection{Quadratic Functions}
+Consider the equation where $y$ depends on a single factor $x$ in a quadratic way:
+\[
+\hat{y} = \hat{\beta}_0 + \hat{\beta}_1 x + \hat{\beta}_2 x^2
+\]
+
+The marginal effect of $x$ on $y$ is:
+\[
+\Delta \hat{y} = \hat{\beta}_1 + 2 \hat{\beta}_2 x
+\]
+The turning point:
+\[
+x* = -\frac{\hat{\beta}_1}{2 \hat{\beta}_2}
+\]
+
+\subsection{Interaction Terms}
+Consider the model:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + u
+\]
+where the effects of $x_1$ and $x_2$ on $y$ are:
+\[
+\frac{\Delta y}{\Delta x_1} = \beta_1 + \beta_3 x_2
+\]
+\[
+\frac{\Delta y}{\Delta x_2} = \beta_2 + \beta_3 x_1
+\]
+
+Interpretation of $\beta_3$:
+\begin{itemize}
+    \item The change in the effect of $x_1$ on $y$ when $x_2$ increases by one unit.
+    \item Also the change in the effect of $x_2$ on $y$ when $x_1$ increases by one unit.
+\end{itemize}
+
+Consider the model:
+\[
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1^2 + \beta_4 x_2^2 + \beta_5 x_1 x_2 + u
+\]
+
+A summary measure is the \textbf{average partial effect (APE)}:
+\[
+APE_{x_1} = \hat{\beta}_2 + 2 \hat{\beta}_3 \bar{x}_1 + \hat{\beta}_5 \bar{x}_2
+\] 
+APE is the mean value of the marginal effect.
+
+\subsection{Making Predictions}
+\textbf{Predicting $y$} \par
+Consider the model:
+\[
+y = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + u
+\]
+Suppose we want to find the C.I. for the predicted value, 
+rewrite $\beta_0 = \theta_0 - \beta_1 c_1 - \beta_2 c_2 - \cdots - \beta_k c_k$,
+Plug into the regression equation:
+\[
+y = \theta_0 + \beta_1 (x_1 - c_1) + \cdots + \beta_k (x_k - c_k) + u
+\]
+The standard error of $\hat{\theta}_0$ can be obtained from the regression output directly.
+
+\textbf{Prediction $y$ when dependent variable is $\log(y)$} \par
+Consider the model:
+\[
+log(y) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + u
+\]
+If $u \sim N(0, \sigma^2)$, then $E[e^u|x] = e^{\sigma^2 / 2}$. \par
+The predicted value of $y$ is:
+\[
+\hat{y} = e^{\hat{\sigma}^2 / 2} \cdot e^{\widehat{log}(y)}
+\]
+
+If $u$ is not normally distributed (more general case),
+\[
+\hat{y} = \hat{\alpha}_0 \cdot e^{\widehat{log}(y)}
+\] 
+where 
+\[
+\hat{\alpha}_0 = \frac{1}{n} \sum_{i=1}^n e^{\hat{u}_i}
+\]
+This is called the \textbf{Duan (1983) smearing estimate}.
+
+\section{Categorical Variables}
+\subsection{Binary Independent Variable}
+Consider the example:
+\[
+wage = \beta_0 + \delta_0 female + \beta_1 educ + u
+\]
+Interpretation of $\delta_0$: the difference in wage between females and males, given the same level of education. \par
+The expected wage for men: 
+\[
+wage = \beta_0 + \beta_1 educ
+\]
+The expected wage for women:
+\[
+wage = (\beta_0 + \delta_0) + \beta_1 educ
+\]
+\textbf{The dummy variable trap:} the number of dummy variables should be one less than the number of categories. \par
+
+\textbf{Interpretation of log-dummy model} \par
+Consider the model:
+\[
+ln(y) = \beta_0 + \delta_0 D + \beta_1 x + u
+\]
+The approximated percentage difference in $y$ between $D=1$ and $D=0$ is $100 \delta_0 \%$. \par
+The exact percentage difference in $y$ between $D=1$ and $D=0$ is $(e^{\delta_0} - 1) \cdot 100 \%$.
+
+\textbf{Interaction among dummy variables} \par
+Consider the model:
+\[
+y = \beta_0 + \delta_1 D + \beta_1 x + \delta_1 D \cdot x + u
+\]
+
+\begin{center}
+\begin{tabular}{lll}
+    \hline
+    Group & Intercept & Slope \\
+    \hline
+    base & $\beta_0$ & $\beta_1$ \\
+    dummy = 1 & $\beta_0 + \delta_0$ & $\beta_1 + \delta_1$ \\
+    \hline
+\end{tabular}
+\end{center}
+Different groups can have different intercepts and slopes.
+
+\textbf{Testing for differences between groups} \par
+Consider a model with $k$ explanatory variables and an intercept. Suppose we have $g$ groups (call them $g=1$ and $g=2$). \par
+The unrestricted model:
+\[
+y = \beta_{g,0} + \beta_{g,1} x_1 + \cdots + \beta_{g,k} x_k + u
+\]
+where $g$ indexes the groups. \par
+The RSS from the unrestricted model can be obtained from two separate regressions
+\[
+RSS_{ur} = RSS_1 + RSS_2
+\]
+
+The F statistic is:
+\[
+F = \frac{[RSS_p - (RSS_1 + RSS_2)]/(k + 1)}{(RSS_1 + RSS_2)/(n - 2(k + 1))} \sim F_{k+1, n-2(k+1)}
+\]
+This F statistic is called the \textbf{Chow statistic}.
+
+\subsection{Binary Outcome Variable}
+The model with a binary dependent variable is called the \textbf{linear probability model (LPM)}:
+\[
+P(y = 1 | x) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k
+\]
+The predicted probability of $y=1$ can be outside the range of $[0,1]$. \par
+\begin{itemize}
+    \item One remedy is to define the predicted value $\tilde{y_i} = 1$ if $\hat{y}_i \geqslant 0.5$ and $\tilde{y}_i = 0$ if $\hat{y}_i < 0.5$.
+    \item More advanced methods include probit and logit models.
+\end{itemize}
+
+The variance of $y$ is:
+\[
+Var(y|x) = P(x) (1 - P(x))
+\]
+As a result, the assumption of homoskedasticity is violated, and the OLS estimator is no longer BLUE. $\Rightarrow$ t-test and F-test are no longer valid. \par
+
+\subsection{Program Evaluation}
+Suppose we are interested in evaluating an intervention or policy that has only two states, for each unit $i$, we have two potential outcomes: $y_i(0)$ and $y_i(1)$. \par
+The treatment effect of the intervention for unit $i$ is:
+\[
+\text{te}_i = y_i(1) - y_i(0)
+\]
+
+The average treatment effect (ATE) is the average of the treatment effects across all units:
+\[
+\tau_{ATE} = E(\text{te}_i) = E(y_i(1) - y_i(0))
+\]
+
+\section{Hetroskadasticity}
+\subsection{Robust Inference After Estimation}
+\textbf{Simple regression case} \par
+Consider the simple regression model:
+\[
+y_i = \beta_0 + \beta_1 x_i + u_i
+\]
+The OLS estimator is:
+\[
+\hat{\beta}_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})}{\sum_{i=1}^n (x_i - \bar{x})^2}
+\]
+
+\textbf{Homo}skedasticity: $Var(u_i|x_i) = \sigma^2$
+\[
+\Rightarrow Var(\hat{\beta}_1) = \frac{\sigma^2}{TSS_x^2}
+\]
+
+\textbf{Hetro}skedasticity: $Var(u_i|x_i) = \sigma_i^2$
+\[
+\Rightarrow Var(\hat{\beta}_1) = \frac{\sum_{i=1}^n (x_i - \bar{x})^2 \sigma_i^2}{TSS_x^2}
+\]
+
+An \textbf{Estimator} of $Var(\hat{\beta}_1|x)$:
+\[
+\widehat{Var}(\hat{\beta}_1|x) = \frac{\sum_{i=1}^n (x_i - \bar{x})^2 \hat{\sigma}_i^2}{TSS_x^2}
+\]
+
+\textbf{Multiple regression case} \par
+An estimator of $Var(\hat{\beta}_j)$ is:
+\[
+\widehat{Var}(\hat{\beta}_j|x) = \frac{\sum_{i=1}^n \hat{\gamma}_{ij}^2 \hat{u}_i^2}{RSS_j^2}
+\]
+\begin{itemize}
+    \item $\hat{\gamma}_ij$: the i-th residual from regressing $x_j$ on all other independent variables
+    \item $RSS_j$: the sum of squared residuals from this partial out regression
+\end{itemize}
+
+\textbf{Ususal v.s. Robust Standard Errors}
+With small sample size, usual t-statistics follow a t-distribution exaclty. \par
+With large sample size, it is recommended to always use robust standard errors.
+
+\subsection{Testing of Hetroskedasticity}
+Consider the multiple regresssion model satisfying M.L.R. 1-4:
+\[
+y = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k + u
+\]
+
+We want to test whether $u^2$ is related to one or more explanatory variable. \par
+One simple approach is to assume a linear function:
+\[
+\hat{u}^2 = \delta_0 + \delta_1 x_1 + \cdots + \delta_k x_k + \hat{v}
+\]
+The null hypothesis of homoskedasticity is:
+\[
+H_0: \delta_1 = \cdots = \delta_k = 0
+\]
+
+\textbf{The F-test}:
+\[
+F = \frac{R_{\hat{u}^2}^2 /k}{(1 -R_{\hat{u}^2}^2)/(n - k - 1)} \sim F_{k, n-k-1}
+\]
+
+\textbf{The Lagrange Multiplier (LM) test}:
+\[
+LM = n R_{\hat{u}^2}^2 \sim \chi_k^2
+\]
+\intuition{If null hypothesis is true, $R^2$ from the regression should be close to zero.}
+
+\subsection{Weighted Least Squares Estimation}
+If we find hetroskedasticity in the data, we can use hetroskedasticity-robust standard errors after estimation by OLS, or use \textbf{weighted least squares (WLS)} estimation. \par
+
+Assume that the heteroskedasticity is of the form:
+\[
+Var(u_i \mid x_i)=\sigma^2 h(x_i)
+\]
+where $h(x_i)$ is a known positive function. \par
+
+Weighted Least Squares (WLS) transforms the model by dividing each observation by $\sqrt{h(x_i)}$:
+\[
+\frac{y_i}{\sqrt{h(x_i)}} = \beta_0\frac{1}{\sqrt{h(x_i)}} + \beta_1\frac{x_i}{\sqrt{h(x_i)}} + \frac{u_i}{\sqrt{h(x_i)}}
+\]
+
+The transformed error term is:
+\[
+u_i^*=\frac{u_i}{\sqrt{h(x_i)}}
+\]
+
+with variance
+\[
+Var(u_i^* \mid x_i) = \frac{Var(u_i \mid x_i)}{h(x_i)} = \sigma^2
+\]
+
+Thus, the transformed model is homoskedastic, and OLS on the transformed model gives the WLS estimator. \par
+
+Equivalently, WLS minimizes:
+\[
+\sum_{i=1}^n u_i^2 = \sum_{i=1}^n\frac{(y_i-\beta_0-\beta_1x_i)^2}{h(x_i)} 
+\]
+
+so observations with smaller variance receive larger weights. \par
+
+\textbf{OLS v.s. WLS} under hetroskedasticity:
+\begin{itemize}
+    \item OLS estimator: unbiased but inefficient
+    \item WLS estimator: more efficient if variance structure correctly specified
+\end{itemize}
+
+\textbf{$R^2$ of WLS}:
+\begin{itemize}
+    \item No longer useful for goodeness-of-fit because it effectively measures the explained variation in $y_i^*$ instead of $y_i$.
+    \item Still useful for computing F statistics.
+\end{itemize}
+
+\section{Basic Analysis of Time Series Data}
+\subsection{Time Series Data and Regression Models}
+\subsubsection{Static Models}
+Suppose we have time series data on two variables, say $y$ and $z$, where $y_t$ and $z_t$ are dated contemporaneously. \par
+A \textbf{static model} relating $y_t$ to $z_t$ is:
+\[
+y_t = \beta_0 + \beta_1 z_t + u_t, t = 1, 2, \cdots, n
+\]
+
+Usually used when a change in $z$ at time $y$ is believed to have an immediate effect on $y$:
+\[
+\Delta y_t = \beta_1 \Delta z_t + \Delta u_t = 0
+\]
+
+\subsubsection{Finite Distributed Lag Models}
+In finite distributed lag (FDL) models, we allow one or more variables to affect $y$ with a lag. \par
+With an FDL of order 2
+\[
+y_t = \alpha_0 + \delta_0 z_t + \delta_1 z_{t-1} + \delta_2 z_{t-2} + u_t
+\]
+
+\begin{itemize}
+    \item $\delta_0$ is usually called the \textbf{impact propensity} or \textbf{impact multiplier}.
+    \item $\delta_j$ as a function of $j$ gives the \textbf{lag distribution} of the dynamic effect of a temporary increase in $z$ on $y$.
+\end{itemize}
+\note{$\delta_j$ is unknown parameters that we estimate from the data.}
+
+\subsection{OLS Properties under Classical Assumptions}
+\begin{itemize}
+    \item Assumption TS.1: Linear in Parameters (Essentially the same as MLR.1)
+    \item Assumption TS.2: No perfect collinearity (Essentially the same as MLR.3)
+    \item Assumption TS.3: Zero conditional mean: \par
+        For each $t$, the expected value of the error term $u_t$, given the explanatory variables for all time periods is zero:
+        \[
+        E(u_t | X) = 0, t = 1, 2, \cdots, n
+        \]
+        \intuition{The error term at time $t$ ($u_t$) is uncorrelated with every explanatory variable in evey time period.}
+
+        The explanatory variables are \textbf{strictly exogenous} when TS.3 holds.\par
+        The $x_{tj}$ is \textbf{contemporaneously exogenous} if 
+        \[
+        E(u_t | x_{t1}, \cdots, x_{tk}) = E(u_t | x_t) = 0
+        \]
+
+        \note{Under assumptions TS.1-3, OLS estimators are unbiased.
+        \[
+        E(\hat{\beta}_j) = \beta_j, j = 0, 1, \cdots, k
+        \]
+        }
+    
+    \item Assumption TS.4: Homoskedasticity
+        Conditional on $X$, the variance of $u_t$ is the same for all $t$:
+        \[
+        Var(u_t | X) = Var(u_t) = \sigma^2, t = 1, 2, \cdots, n
+        \]
+
+    \item Assumption TS.5: No serial correlation
+        Conditional on $X$, the errors in two different time periods are uncorrelated:
+
+        We say that the errors suffer from \textbf{serial correlation} if TS.5 does not hold.
+
+        \note{Under assumptions TS.1-5, the OLS estimators are the best linear unbiased estimators (BLUE) conditional on $X$. \par
+        OLS has the same desirable properties under TS.1-5 as it does under MLR.1-5.}
+
+    \item Assumption TS.6: Normality
+        The errors $u_t$ are independent of $X$ and are independently and identically distributed as $N(0, \sigma^2)$
+
+        \note{Under assumptions TS.1-6, the OLS estimators are normally distributed conditional on $X$.}
+
+\end{itemize}
+
+\subsection{Functional Forms and Dummy Variables}
+\textbf{Functional forms}:
+All of the funtional forms apply to the time serie setting. \par
+Example: log model
+\[
+\log(y_t) = \beta_0 + \beta_1 \log(x_t) + u_t
+\]
+
+\textbf{Dummy variables}:
+A dummy variable represents whether a certain event has occurred in each tme period. \par
+Example: whether the U.X has a Democrat or Republican president $democ_t$ \par
+Example: whether a specific policy was in effect $policy_t$ \par
+
+Ofthen used to isolate certain periods that may be systematically different from other periods. \par
+
+\subsection{Trends and Seasonality}
+\subsubsection{Trends}
+Many economic time series have a common tendency of growing over time. \par
+
+\textbf{Linear time trend}:
+\[
+y_t = \beta_0 + \beta_1 t + e_t, t = 1, 2, \cdots
+\]
+where $e_t$ is an independent, identically distributed sequence with $E(e_t) = 0$ and $\text{Var}(e_t) = \sigma^2$ for all $t$. \par
+
+\textbf{Exponential time trend}:
+\[
+\log(y_t) = \beta_0 + \beta_1 t + e_t, t = 1, 2, \cdots
+\]
+
+Including a time trend in the model can be interpreted as \textbf{detrending} the original data series before using them in the regression anaylysis. \par
+\intuition{Detrending removes the common movement caused purely by time and helps determine whether two variables are genuinely related or merely trending together over time.}
+
+\subsubsection{Seasonality}
+Time series observed at monthly or quarterly (or even daily) intervals often exhibit \textbf{seasonality}. \par
+One simple approach with regression analysis is to include a set of seasonal dummy variables in the model:
+\[
+y_t = \beta_0 + \beta_1 x_{1t} + \delta_1 feb_t + \delta_2 mar_t + \cdots + \delta_{11} dec_t + u_t
+\]
+
+\end{document}
